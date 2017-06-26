@@ -34,7 +34,7 @@ func start() {
 			log.Fatal(err)
 		}
 
-		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT);" +
+		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT);" +
 			"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, hash TEXT);")
 
 		if err != nil {
@@ -68,22 +68,21 @@ func insertMarkdown(md *Markdown) int64 {
 	stmt, err := db.Prepare("INSERT INTO posts(title, url, author, summary, markdown, target, key, visible) values(?,?,?,?,?,?,?,?)")
 
 	if err != nil {
-		fmt.Print(err)
-		os.Exit(-1)
+		log.Fatal(err)
 	}
 
 	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Key, md.Visible)
 
 	if err != nil {
-		fmt.Print(err)
-		os.Exit(-1)
+		log.Print(err)
+		return -1
 	}
 
 	id, err := res.LastInsertId()
 
 	if err != nil {
-		fmt.Print(err)
-		os.Exit(-1)
+		log.Print(err)
+		return -1
 	}
 
 	return id
