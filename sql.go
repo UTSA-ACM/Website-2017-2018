@@ -34,7 +34,7 @@ func start() {
 			log.Fatal(err)
 		}
 
-		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT);" +
+		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT);" +
 			"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, hash TEXT);")
 
 		if err != nil {
@@ -65,14 +65,14 @@ func start() {
 
 func insertMarkdown(md *Markdown) int64 {
 
-	stmt, err := db.Prepare("INSERT INTO posts(title, url, author, summary, markdown, target, key) values(?,?,?,?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO posts(title, url, author, summary, markdown, target, key, visible) values(?,?,?,?,?,?,?,?)")
 
 	if err != nil {
 		fmt.Print(err)
 		os.Exit(-1)
 	}
 
-	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Key)
+	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Key, md.Visible)
 
 	if err != nil {
 		fmt.Print(err)
@@ -87,6 +87,26 @@ func insertMarkdown(md *Markdown) int64 {
 	}
 
 	return id
+}
+
+func getMarkdown(url string) Markdown {
+	rows, err := db.Query("SELECT * FROM posts WHERE url=?", url)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var md Markdown
+	var id int
+
+	for rows.Next() {
+		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return md
 }
 
 func checkUser(name, password string) bool {

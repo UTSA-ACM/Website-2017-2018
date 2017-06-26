@@ -14,8 +14,8 @@ import (
 
 func markdownPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-
-	renderMarkdown(w, vars["name"])
+	md := getMarkdown(vars["url"])
+	renderMarkdown(w, md)
 }
 
 func insertMd(w http.ResponseWriter, r *http.Request) {
@@ -96,7 +96,7 @@ func main() {
 	start()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/page/{name}", markdownPage)
+	r.HandleFunc("/page/{url}", markdownPage)
 	r.HandleFunc("/c", insertMd)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/verify", verify)

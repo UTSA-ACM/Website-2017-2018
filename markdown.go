@@ -24,6 +24,7 @@ type Markdown struct {
 	Body    string
 	Key     string // Key is used to store the url key that will allow editing of the page
 	Target  string // This will allow you to have a pass through to another page
+	Visible int
 }
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -39,6 +40,7 @@ func newMarkdown(title, author, summary, body, target string) *Markdown {
 	md.Body = body
 	md.Target = target
 	md.Key = generateKey()
+	md.Visible = 0
 
 	return &md
 }
@@ -149,9 +151,7 @@ func writeJson(name string, md Markdown) {
 	ioutil.WriteFile("markdown/"+name+".json", b, 0660)
 }
 
-func renderMarkdown(w http.ResponseWriter, name string) {
-
-	md := readJson(name)
+func renderMarkdown(w http.ResponseWriter, md Markdown) {
 
 	md.Body = string(blackfriday.MarkdownCommon([]byte(md.Body)))
 
