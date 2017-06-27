@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -139,7 +138,7 @@ func checkUser(name, password string) bool {
 }
 
 func contains(fi []os.FileInfo, name string) bool {
-	fmt.Print(fi[0].Name())
+
 	for _, file := range fi {
 		if file.Name() == name {
 			return true
