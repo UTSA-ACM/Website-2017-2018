@@ -8,6 +8,7 @@ import (
 	"time"
 
 	mux "github.com/gorilla/mux"
+	"log"
 )
 
 // TODO Create cookies when verifying login, and create a function to check whether that cookie is valid etc
@@ -101,8 +102,9 @@ func main() {
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)
+
 	http.Handle("/", r)
-	http.ListenAndServe(":80", nil)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 
 }
 
