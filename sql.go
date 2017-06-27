@@ -22,7 +22,7 @@ func start() {
 	dirEntries, err := ioutil.ReadDir(".")
 
 	if err != nil {
-		fmt.Print(err)
+		log.Fatal(err)
 	}
 
 	if !contains(dirEntries, "blog.db") {
