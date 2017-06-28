@@ -125,10 +125,9 @@ func main() {
 	start()
 
 	r := mux.NewRouter()
+	r.StrictSlash(true)
 	r.HandleFunc("/page/{url}", markdownPage)
 	r.HandleFunc("/page/{url}/{key}", pageEditor)
-	r.HandleFunc("/page/{url}/", markdownPage)
-	r.HandleFunc("/page/{url}/{key}/", pageEditor)
 
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/verify", verify)
