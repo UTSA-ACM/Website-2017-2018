@@ -28,6 +28,7 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 	md := getMarkdown(vars["url"])
 
 	p := bluemonday.UGCPolicy()
+	fmt.Print(p)
 
 	sanitizeMarkdown(&md)
 
@@ -49,6 +50,38 @@ func newPage(w http.ResponseWriter, r *http.Request) {
 	md := newMarkdown(title, "", "", "", "")
 
 	http.Redirect(w, r, "/editor/"+md.URL, 302)
+
+}
+
+func dashboard(w http.ResponseWriter, r *http.Request) {
+
+	// Check login status
+	cookie, err := r.Cookie("token")
+
+	if err != nil {
+		// TODO: proper error handling (redirection?)
+		fmt.Fprint(w, "Not logged in")
+		return
+	}
+
+	token := cookie.Value
+	username := checkSession(token)
+
+	if username == "" {
+		// TODO: proper error handling (redirection?)
+		fmt.Fprint(w, "Not logged in")
+		return
+	}
+
+	fmt.Fprint(w, "Logged in as "+username)
+
+	dashboardTemplate, err := template.ParseFiles("templates/dashboard.html")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dashboardTemplate.Execute(w, username)
 
 }
 
@@ -123,6 +156,7 @@ func main() {
 	start()
 
 	r := mux.NewRouter()
+	r.HandleFunc("/admin/dashboard", dashboard)
 	r.HandleFunc("/page/{url}", markdownPage)
 	r.HandleFunc("/editor/{url}", pageEditor)
 	r.HandleFunc("/login", login)
