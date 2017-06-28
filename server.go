@@ -10,7 +10,6 @@ import (
 	"log"
 
 	mux "github.com/gorilla/mux"
-	"github.com/microcosm-cc/bluemonday"
 )
 
 // TODO Create cookies when verifying login, and create a function to check whether that cookie is valid etc
@@ -27,7 +26,10 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 
 	md := getMarkdown(vars["url"])
 
-	p := bluemonday.UGCPolicy()
+	if md.Key != vars["key"] {
+		fmt.Fprint(w, "Access Denied")
+		return
+	}
 
 	sanitizeMarkdown(&md)
 
@@ -124,7 +126,10 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/page/{url}", markdownPage)
-	r.HandleFunc("/editor/{url}", pageEditor)
+	r.HandleFunc("/page/{url}/{key}", pageEditor)
+	r.HandleFunc("/page/{url}/", markdownPage)
+	r.HandleFunc("/page/{url}/{key}/", pageEditor)
+
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)
