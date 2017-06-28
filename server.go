@@ -7,8 +7,10 @@ import (
 	"net/http"
 	"time"
 
-	mux "github.com/gorilla/mux"
 	"log"
+
+	mux "github.com/gorilla/mux"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 // TODO Create cookies when verifying login, and create a function to check whether that cookie is valid etc
@@ -19,11 +21,35 @@ func markdownPage(w http.ResponseWriter, r *http.Request) {
 	renderMarkdown(w, md)
 }
 
-func insertMd(w http.ResponseWriter, r *http.Request) {
+func pageEditor(w http.ResponseWriter, r *http.Request) {
 
-	md := newMarkdown("hello world and", "me", "no sum", "# no life\nmy life", "")
+	vars := mux.Vars(r)
 
-	insertMarkdown(md)
+	md := getMarkdown(vars["url"])
+
+	p := bluemonday.UGCPolicy()
+
+	sanitizeMarkdown(&md)
+
+	out, err := templateString("editor.html", md)
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	fmt.Fprint(w, out)
+
+}
+
+func newPage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	title := vars["title"]
+
+	md := newMarkdown(title, "", "", "", "")
+
+	http.Redirect(w, r, "/editor/"+md.URL, 302)
+
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -98,7 +124,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/page/{url}", markdownPage)
-	r.HandleFunc("/c", insertMd)
+	r.HandleFunc("/editor/{url}", pageEditor)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)

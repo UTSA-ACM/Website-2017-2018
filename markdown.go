@@ -168,3 +168,13 @@ func renderMarkdown(w http.ResponseWriter, md Markdown) {
 	fmt.Fprint(w, out)
 
 }
+
+func sanitizeMarkdown(md *Markdown) {
+	p := bluemonday.UGCPolicy()
+
+	md.Body = p.Sanitize(md.Body)
+	md.Author = p.Sanitize(md.Author)
+	md.Summary = p.Sanitize(md.Summary)
+	md.Title = p.Sanitize(md.Title)
+	md.Target = p.Sanitize(md.Target)
+}

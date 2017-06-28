@@ -1,0 +1,21 @@
+<html>
+	<head>
+
+	</head>
+
+	<body>
+		
+		<form method="POST" action="/newpage">
+			<input type="text" name="title" placeholder="Title" value="{{ .Title }}">
+			<input type="text" name="author" placeholder="Author" value="{{ .Author }}">
+			<input type="text" name="blurb" placeholder="Blurb" value="{{ .Summary }}">
+			<input type="text" name="body" placeholder="Body" value="{{ .Body }}">
+			<input type="text" name="target" placeholder="Redirect Target" value="{{ .Target }}">
+			<input type="checkbox" name="visible" value="{{ .Visible }}">
+			<input type="submit" value="Save">
+		</form>
+
+	</body>
+
+
+</html>
