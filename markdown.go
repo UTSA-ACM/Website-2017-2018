@@ -10,6 +10,7 @@ import (
 	"os"
 	"regexp"
 	"text/template"
+	"time"
 
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday"
@@ -17,17 +18,18 @@ import (
 
 // Markdown is a markdown post
 type Markdown struct {
-	Title   string
-	URL     string
-	Author  string
-	Summary string
-	Body    string
-	Key     string // Key is used to store the url key that will allow editing of the page
-	Target  string // This will allow you to have a pass through to another page
-	Visible int
+	Title    string
+	URL      string
+	Author   string
+	Summary  string
+	Body     string
+	Key      string // Key is used to store the url key that will allow editing of the page
+	Target   string // This will allow you to have a pass through to another page
+	Visible  int
+	Datetime int
 }
 
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 func newMarkdown(title, author, summary, body, target string) *Markdown {
 
@@ -41,6 +43,7 @@ func newMarkdown(title, author, summary, body, target string) *Markdown {
 	md.Target = target
 	md.Key = generateKey()
 	md.Visible = 0
+	md.Datetime = int(time.Now().Unix())
 
 	return &md
 }

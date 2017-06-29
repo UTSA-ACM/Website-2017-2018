@@ -44,13 +44,16 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 }
 
 func newPage(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
 
-	title := vars["title"]
+	title := r.PostFormValue("title")
 
 	md := newMarkdown(title, "", "", "", "")
 
-	http.Redirect(w, r, "/editor/"+md.URL, 302)
+	if insertMarkdown(md) == -1 {
+		log.Fatal("Insert Failed")
+	}
+
+	http.Redirect(w, r, "/page/"+md.URL+"/"+md.Key, 302)
 
 }
 
@@ -80,7 +83,11 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	dashboardTemplate.Execute(w, username)
+	var posts []Markdown
+
+	posts, _ = getPostsSortedByDate(1, 3, true)
+
+	dashboardTemplate.Execute(w, posts)
 
 }
 
@@ -166,6 +173,7 @@ func main() {
 	r.HandleFunc("/admin", dashboard)
 	r.HandleFunc("/page/{url}", markdownPage)
 	r.HandleFunc("/page/{url}/{key}", pageEditor)
+	r.HandleFunc("/admin/new", newPage)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)

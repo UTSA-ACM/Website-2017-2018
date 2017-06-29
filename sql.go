@@ -8,6 +8,8 @@ import (
 
 	"log"
 
+	"fmt"
+
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -33,7 +35,7 @@ func start() {
 			log.Fatal(err)
 		}
 
-		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT, date );" +
+		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT, created INTEGER);" +
 			"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, hash TEXT);")
 
 		if err != nil {
@@ -64,13 +66,13 @@ func start() {
 
 func insertMarkdown(md *Markdown) int64 {
 
-	stmt, err := db.Prepare("INSERT INTO posts(title, url, author, summary, markdown, target, key, visible) values(?,?,?,?,?,?,?,?)")
-
+	stmt, err := db.Prepare("INSERT INTO posts(title, url, author, summary, markdown, target, key, visible, created) values(?,?,?,?,?,?,?,?,?)")
+	defer stmt.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Key, md.Visible)
+	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Key, md.Visible, md.Datetime)
 
 	if err != nil {
 		log.Print(err)
@@ -87,9 +89,48 @@ func insertMarkdown(md *Markdown) int64 {
 	return id
 }
 
+func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
+
+	var order string
+	var sign string
+
+	if afterId {
+		order = "ASC"
+		sign = ">"
+	} else {
+		order = "DESC"
+		sign = "<"
+	}
+
+	query := fmt.Sprintf("SELECT * FROM posts WHERE id %v ? ORDER BY created %v LIMIT ?", sign, order)
+	fmt.Print(query)
+	rows, err := db.Query(query, id, count)
+	defer rows.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var posts []Markdown
+
+	for rows.Next() {
+		var md Markdown
+		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible, &md.Datetime)
+		fmt.Print(md, "here")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		posts = append(posts, md)
+	}
+
+	return posts, id
+
+}
+
 func getMarkdown(url string) Markdown {
 	rows, err := db.Query("SELECT * FROM posts WHERE url=?", url)
-
+	defer rows.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -98,7 +139,7 @@ func getMarkdown(url string) Markdown {
 	var id int
 
 	for rows.Next() {
-		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible)
+		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible, &md.Datetime)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -110,7 +151,7 @@ func getMarkdown(url string) Markdown {
 func checkUser(name, password string) bool {
 
 	rows, err := db.Query("SELECT hash FROM users WHERE name=?", name)
-
+	defer rows.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
