@@ -89,6 +89,22 @@ func insertMarkdown(md *Markdown) int64 {
 	return id
 }
 
+// TODO FINISH THIS FUNCTION
+func updateMarkdown(url string, md *Markdown) string {
+
+	md.URL = titleToUrl(md.Title)
+
+	stmt, err := db.Prepare("UPDATE posts SET title = ?, url = ?, author = ?, summary = ?, markdown = ?, target = ?, visible = ? WHERE url=?")
+
+	if err != nil {
+		log.Fatal("updateMarkdown:", err)
+	}
+
+	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Visible, url)
+
+	return md.URL
+}
+
 func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
 
 	var order string
@@ -143,6 +159,7 @@ func getMarkdown(url string) Markdown {
 		if err != nil {
 			log.Fatal(err)
 		}
+		break
 	}
 
 	return md

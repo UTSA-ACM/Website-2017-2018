@@ -5,7 +5,7 @@
 
 	<body>
 		
-		<form method="POST" action="/newpage">
+		<form method="POST" action="/update/{{ .URL }}/{{ .Key }}">
 			<input type="text" name="title" placeholder="Title" value="{{ .Title }}">
 			<input type="text" name="author" placeholder="Author" value="{{ .Author }}">
 			<input type="text" name="blurb" placeholder="Blurb" value="{{ .Summary }}">

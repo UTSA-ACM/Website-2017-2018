@@ -9,6 +9,8 @@ import (
 
 	"log"
 
+	"strconv"
+
 	mux "github.com/gorilla/mux"
 )
 
@@ -40,6 +42,43 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprint(w, out)
+
+}
+
+//TODO FINISH UPDATE, CREATE ENDPOINT, DOUBLE CHECK
+func updatePage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	md := getMarkdown(vars["url"])
+
+	if md.Key != vars["key"] {
+		fmt.Fprint(w, "Access Denied")
+		return
+	}
+
+	title := r.PostFormValue("title")
+	author := r.PostFormValue("author")
+	summary := r.PostFormValue("summary")
+	body := r.PostFormValue("body")
+	target := r.PostFormValue("target")
+	visible := r.PostFormValue("visible")
+
+	md.Title = title
+	md.Author = author
+	md.Summary = summary
+	md.Body = body
+	md.Target = target
+	vis, err := strconv.ParseInt(visible, 0, 64)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	md.Visible = int(vis)
+
+	newURL := updateMarkdown(vars["url"], &md)
+
+	http.Redirect(w, r, "/page/"+newURL+"/"+md.Key, 302)
 
 }
 
