@@ -33,7 +33,7 @@ func start() {
 			log.Fatal(err)
 		}
 
-		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT);" +
+		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT, date );" +
 			"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, hash TEXT);")
 
 		if err != nil {
