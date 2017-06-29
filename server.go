@@ -9,12 +9,8 @@ import (
 
 	"log"
 
-	"strconv"
-
 	mux "github.com/gorilla/mux"
 )
-
-// TODO Create cookies when verifying login, and create a function to check whether that cookie is valid etc
 
 func markdownPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -45,7 +41,6 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//TODO FINISH UPDATE, CREATE ENDPOINT, DOUBLE CHECK
 func updatePage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -68,13 +63,12 @@ func updatePage(w http.ResponseWriter, r *http.Request) {
 	md.Summary = summary
 	md.Body = body
 	md.Target = target
-	vis, err := strconv.ParseInt(visible, 0, 64)
 
-	if err != nil {
-		log.Fatal(err)
+	if visible == "" {
+		md.Visible = 0
+	} else {
+		md.Visible = 1
 	}
-
-	md.Visible = int(vis)
 
 	newURL := updateMarkdown(vars["url"], &md)
 
@@ -99,22 +93,24 @@ func newPage(w http.ResponseWriter, r *http.Request) {
 func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	// Check login status
-	cookie, err := r.Cookie("token")
+	//cookie, err := r.Cookie("token")
 
-	if err != nil {
-		// TODO: proper error handling (redirection?)
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
+	// if err != nil {
+	// 	// TODO: proper error handling (redirection?)
+	// 	http.Redirect(w, r, "/login", 302)
+	// 	return
+	// }
 
-	token := cookie.Value
-	username := checkSession(token)
+	//token := cookie.Value
+	//username := checkSession(token)
 
-	if username == "" {
-		// TODO: proper error handling (redirection?)
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
+	checkLogin(w, r)
+
+	// if username == "" {
+	// 	// TODO: proper error handling (redirection?)
+	// 	http.Redirect(w, r, "/login", 302)
+	// 	return
+	// }
 
 	dashboardTemplate, err := template.ParseFiles("templates/dashboard.html")
 
@@ -124,7 +120,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	var posts []Markdown
 
-	posts, _ = getPostsSortedByDate(1, 3, true)
+	posts, _ = getPostsSortedByDate(0, 10, true)
 
 	dashboardTemplate.Execute(w, posts)
 
@@ -173,6 +169,22 @@ func loggedIn(r *http.Request) bool {
 	return true
 }
 
+func staticPage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	t := template.New(vars["file"])
+
+	tstring := "static/" + vars["file"]
+
+	t, err := t.ParseFiles(tstring)
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	err = t.Execute(w, struct{}{})
+}
+
 func checkLogin(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("token")
 
@@ -192,7 +204,7 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/admin", 302)
+	//http.Redirect(w, r, "/admin", 302)
 
 }
 
@@ -212,10 +224,13 @@ func main() {
 	r.HandleFunc("/admin", dashboard)
 	r.HandleFunc("/page/{url}", markdownPage)
 	r.HandleFunc("/page/{url}/{key}", pageEditor)
+	r.HandleFunc("/page/{url}/{key}/update", updatePage)
 	r.HandleFunc("/admin/new", newPage)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)
+
+	r.HandleFunc("/static/{file}", staticPage)
 
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":8080", nil))

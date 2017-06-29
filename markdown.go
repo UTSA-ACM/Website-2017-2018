@@ -49,7 +49,7 @@ func newMarkdown(title, author, summary, body, target string) *Markdown {
 }
 
 func generateKey() string {
-	b := make([]byte, 5)
+	b := make([]byte, 7)
 	for i := range b {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}

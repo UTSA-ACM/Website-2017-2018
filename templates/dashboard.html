@@ -8,12 +8,14 @@
 
     <h1>Epos Dashboard</h1>
     
-    <p>Logged in as </p>
+    
 
     <h2>Pages</h2>
 
     {{range .}}
-        {{.Title}}
+        <div class="pageinfo">
+            <a href="/page/{{.URL}}/{{.Key}}">{{.Title}}</a>
+        </div>
     {{end}}
     
 

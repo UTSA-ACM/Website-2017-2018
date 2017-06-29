@@ -5,10 +5,10 @@
 
 	<body>
 		
-		<form method="POST" action="/update/{{ .URL }}/{{ .Key }}">
+		<form method="POST" action="/page/{{ .URL }}/{{ .Key }}/update">
 			<input type="text" name="title" placeholder="Title" value="{{ .Title }}">
 			<input type="text" name="author" placeholder="Author" value="{{ .Author }}">
-			<input type="text" name="blurb" placeholder="Blurb" value="{{ .Summary }}">
+			<input type="text" name="summary" placeholder="Summary" value="{{ .Summary }}">
 			<input type="text" name="body" placeholder="Body" value="{{ .Body }}">
 			<input type="text" name="target" placeholder="Redirect Target" value="{{ .Target }}">
 			<input type="checkbox" name="visible" value="{{ .Visible }}">

@@ -89,18 +89,28 @@ func insertMarkdown(md *Markdown) int64 {
 	return id
 }
 
-// TODO FINISH THIS FUNCTION
 func updateMarkdown(url string, md *Markdown) string {
 
 	md.URL = titleToUrl(md.Title)
 
 	stmt, err := db.Prepare("UPDATE posts SET title = ?, url = ?, author = ?, summary = ?, markdown = ?, target = ?, visible = ? WHERE url=?")
+	defer stmt.Close()
 
 	if err != nil {
 		log.Fatal("updateMarkdown:", err)
 	}
 
 	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Visible, url)
+
+	if err != nil {
+		log.Fatal("updateMarkdown:", err)
+	}
+
+	_, err = res.LastInsertId()
+
+	if err != nil {
+		log.Fatal("updateMarkdown:", err)
+	}
 
 	return md.URL
 }
@@ -119,7 +129,7 @@ func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
 	}
 
 	query := fmt.Sprintf("SELECT * FROM posts WHERE id %v ? ORDER BY created %v LIMIT ?", sign, order)
-	fmt.Print(query)
+
 	rows, err := db.Query(query, id, count)
 	defer rows.Close()
 
@@ -132,7 +142,7 @@ func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
 	for rows.Next() {
 		var md Markdown
 		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible, &md.Datetime)
-		fmt.Print(md, "here")
+
 		if err != nil {
 			log.Fatal(err)
 		}
