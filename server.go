@@ -61,7 +61,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		// TODO: proper error handling (redirection?)
-		fmt.Fprint(w, "Not logged in")
+		http.Redirect(w, r, "/login", 302)
 		return
 	}
 
@@ -70,7 +70,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	if username == "" {
 		// TODO: proper error handling (redirection?)
-		fmt.Fprint(w, "Not logged in")
+		http.Redirect(w, r, "/login", 302)
 		return
 	}
 
@@ -99,7 +99,7 @@ func verify(w http.ResponseWriter, r *http.Request) {
 		cookie := http.Cookie{Name: "token", Value: token, MaxAge: 259200}
 		http.SetCookie(w, &cookie)
 		//fmt.Fprint(w, "cookie should be made")
-		http.Redirect(w, r, "/check", 302)
+		http.Redirect(w, r, "/admin", 302)
 
 	} else {
 		cookie := http.Cookie{Name: "token", Value: "", MaxAge: 0}
@@ -131,21 +131,27 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("token")
 
 	if err != nil {
-		fmt.Fprint(w, "Not logged in")
-	} else {
 
-		token := cookie.Value
+		http.Redirect(w, r, "/login", 302)
+		return
 
-		username := checkSession(token)
-
-		if username == "" {
-			fmt.Fprint(w, "Not logged in")
-			return
-		}
-
-		fmt.Fprint(w, "Logged in as "+username)
 	}
 
+	token := cookie.Value
+
+	username := checkSession(token)
+
+	if username == "" {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+
+	http.Redirect(w, r, "/admin", 302)
+
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "Welcome to Epos!")
 }
 
 func main() {
@@ -156,7 +162,8 @@ func main() {
 
 	r := mux.NewRouter()
 	r.StrictSlash(true)
-	r.HandleFunc("/admin/dashboard", dashboard)
+	r.HandleFunc("/", index)
+	r.HandleFunc("/admin", dashboard)
 	r.HandleFunc("/page/{url}", markdownPage)
 	r.HandleFunc("/page/{url}/{key}", pageEditor)
 	r.HandleFunc("/login", login)
