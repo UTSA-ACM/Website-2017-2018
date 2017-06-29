@@ -74,8 +74,6 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprint(w, "Logged in as "+username)
-
 	dashboardTemplate, err := template.ParseFiles("templates/dashboard.html")
 
 	if err != nil {
