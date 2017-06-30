@@ -186,11 +186,13 @@ func staticPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkLogin(w http.ResponseWriter, r *http.Request) {
+
 	cookie, err := r.Cookie("token")
 
 	if err != nil {
 
-		http.Redirect(w, r, "/login", 302)
+		redirectURL := "/login?continue=" + r.RequestURI
+		http.Redirect(w, r, redirectURL, 302)
 		return
 
 	}
@@ -200,11 +202,12 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 	username := checkSession(token)
 
 	if username == "" {
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
 
-	//http.Redirect(w, r, "/admin", 302)
+		redirectURL := "/login?continue=" + r.RequestURI
+		http.Redirect(w, r, redirectURL, 302)
+		return
+
+	}
 
 }
 
