@@ -15,6 +15,11 @@ import (
 func markdownPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	md := getMarkdown(vars["url"])
+
+	if md.Target != "" {
+		http.Redirect(w, r, md.Target, 302)
+	}
+
 	renderMarkdown(w, md)
 }
 
