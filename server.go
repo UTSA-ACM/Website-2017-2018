@@ -166,22 +166,6 @@ func loggedIn(r *http.Request) bool {
 	return true
 }
 
-func staticPage(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-
-	t := template.New(vars["file"])
-
-	tstring := "static/" + vars["file"]
-
-	t, err := t.ParseFiles(tstring)
-
-	if err != nil {
-		fmt.Print(err)
-	}
-
-	err = t.Execute(w, struct{}{})
-}
-
 func checkLogin(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("token")
 
@@ -228,7 +212,8 @@ func main() {
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)
 
-	r.HandleFunc("/static/{file}", staticPage)
+	statichandler := http.FileServer(http.Dir("./static/"))
+	http.Handle("/static/", http.StripPrefix("/static", statichandler))
 
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":8080", nil))
