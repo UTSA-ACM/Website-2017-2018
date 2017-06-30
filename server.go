@@ -76,6 +76,21 @@ func updatePage(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func deletePage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	md := getMarkdown(vars["url"])
+
+	if md.Key != vars["key"] {
+		fmt.Fprint(w, "Access Denied")
+		return
+	}
+
+	deleteMarkdown(md.URL)
+
+	http.Redirect(w, r, "/admin", 302)
+}
+
 func newPage(w http.ResponseWriter, r *http.Request) {
 
 	title := r.PostFormValue("title")
@@ -92,25 +107,7 @@ func newPage(w http.ResponseWriter, r *http.Request) {
 
 func dashboard(w http.ResponseWriter, r *http.Request) {
 
-	// Check login status
-	//cookie, err := r.Cookie("token")
-
-	// if err != nil {
-	// 	// TODO: proper error handling (redirection?)
-	// 	http.Redirect(w, r, "/login", 302)
-	// 	return
-	// }
-
-	//token := cookie.Value
-	//username := checkSession(token)
-
 	checkLogin(w, r)
-
-	// if username == "" {
-	// 	// TODO: proper error handling (redirection?)
-	// 	http.Redirect(w, r, "/login", 302)
-	// 	return
-	// }
 
 	dashboardTemplate, err := template.ParseFiles("templates/dashboard.html")
 
