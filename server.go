@@ -98,6 +98,12 @@ func deletePage(w http.ResponseWriter, r *http.Request) {
 
 func newPage(w http.ResponseWriter, r *http.Request) {
 
+	checkLogin(w, r)
+	if r.Method != "POST" {
+		http.Redirect(w, r, "/admin", 302)
+		return
+	}
+
 	title := r.PostFormValue("title")
 
 	md := newMarkdown(title, "", "", "", "")

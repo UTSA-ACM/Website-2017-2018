@@ -1,21 +1,64 @@
 <html>
-	<head>
 
-	</head>
+<head>
+	<link rel="stylesheet" type="text/css" href="/static/editor.css">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Raleway:300,400,700" rel="stylesheet">
+</head>
 
-	<body>
-		
+<body>
+
+	<nav>
+		<a href="/admin" class="link">
+			<div class="logoarea">
+				<img src="/static/orchid.png">
+				<span>Dashboard</span>
+			</div>
+		</a>
+
+	</nav>
+
+	<main>
 		<form method="POST" action="/page/{{ .URL }}/{{ .Key }}/update">
-			<input type="text" name="title" placeholder="Title" value="{{ .Title }}">
-			<input type="text" name="author" placeholder="Author" value="{{ .Author }}">
-			<input type="text" name="summary" placeholder="Summary" value="{{ .Summary }}">
-			<input type="text" name="body" placeholder="Body" value="{{ .Body }}">
-			<input type="text" name="target" placeholder="Redirect Target" value="{{ .Target }}">
-			<input type="checkbox" name="visible" value="{{ .Visible }}">
-			<input type="submit" value="Save">
+			<figure>
+				<input type="text" name="title" placeholder="Title" value="{{ .Title }}">	
+			</figure>
+
+			<figure>
+				<input type="text" name="author" placeholder="Author" value="{{ .Author }}">
+			</figure>
+
+			
+
+			<figure>
+				<input type="text" name="target" placeholder="Redirect URL" value="{{ .Target }}">
+			</figure>
+
+			<figure>
+				<div class="visible">
+					Make post visible
+					<input type="checkbox" name="visible" value="{{ .Visible }}">
+				</div>
+			</figure>
+
+
+			<div class="textarea-holder">
+				<figure>				
+					<textarea name="summary" placeholder="Summary..." id="summary">{{.Summary}}</textarea>
+				</figure>
+
+				<figure>
+					<textarea name="body" id="body" placeholder="It was a dark and dreary night...">{{.Body}}</textarea>
+				</figure>
+
+				<figure class="submit-holder">
+					<input type="submit" value="Save">
+				</figure>
+			</div>
 		</form>
+	</main>
 
-	</body>
+</body>
 
-
+	<script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
+	<script src="/static/editor.js"></script>
 </html>

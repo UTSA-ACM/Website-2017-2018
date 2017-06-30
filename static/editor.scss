@@ -1,0 +1,154 @@
+* {
+	font-family: 'Raleway', sans-serif;
+	box-sizing: border-box;
+	
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.link {
+	text-decoration: none;
+}
+
+.logoarea {
+	display: flex;
+	align-items: center;
+	height: 5em;
+	padding: 10px;
+
+	img {
+		height: 100%;
+		width: auto;
+	}
+
+	span {
+		color: #444;
+		font-weight: 300;
+		font-size: 40pt;
+
+	}
+}
+
+form {
+	width: 100%;
+	max-width: 1200px;
+	
+	
+	
+
+	
+}
+
+main {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+
+}
+
+figure {
+	width: 100%;
+	
+	margin: 0px;
+	font-size: 18pt;
+
+	display: flex;
+	
+	padding: 5px;
+
+	.visible {
+		width: 95%;
+		max-width: 30em;
+	}
+
+	input[type=text] {
+		border: none;
+		box-shadow: 1px 1px 4px 0px #666;
+		padding: 10px;
+		border-radius: 5px;
+		outline: none;
+		width: 100%;
+		max-width: 30em;
+
+		font-size: 18pt;
+		
+	}
+
+	input[type=checkbox] {
+		width: 10px;
+		height: 10px;
+	}
+
+	.textarea-holder {
+		width: 95%;
+		display: flex;
+		
+	}
+
+	textarea {
+		
+
+		display: block;
+		resize: none;
+		overflow: hidden;
+		
+		
+		border: none;
+		box-shadow: 1px 1px 4px 0px #666;
+		padding: 10px;
+		border-radius: 5px;
+		outline: none;
+
+
+		width: 100%;
+		
+
+		font-size: 18pt;
+	}
+
+	input[type=submit] {
+
+		width: 100px;
+		background: #1af;
+		border: none;
+		
+		padding: 10px;
+		padding-left: 20px;
+		padding-right: 20px;
+
+		float: right;
+		font-size: 18pt;
+		font-weight: 300;
+		color: #fff;
+		
+		
+	}
+
+	
+
+}
+
+.submit-holder {
+	
+	input {
+		margin-left: calc(100% - 100px);
+		transition: all .1s ease-in-out;
+	}
+
+	input:hover {
+		cursor: pointer;
+		box-shadow: 1px 1px 2px 0 #444;
+	}
+}
+
+#summary {
+	min-height: 7em;
+}
+
+#body {
+	min-height: 20em;
+}
+
