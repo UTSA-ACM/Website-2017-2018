@@ -115,6 +115,26 @@ func updateMarkdown(url string, md *Markdown) string {
 	return md.URL
 }
 
+func deleteMarkdown(url string) error {
+
+	stmt, err := db.Prepare("DELETE FROM posts WHERE url=?")
+	defer stmt.Close()
+
+	if err != nil {
+		log.Print(err)
+		return err
+	}
+
+	_, err = stmt.Exec(url)
+
+	if err != nil {
+		log.Print(err)
+		return err
+	}
+
+	return nil
+}
+
 func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
 
 	var order string

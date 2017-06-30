@@ -1,33 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Epos Dashboard</title>
+	<meta charset="UTF-8">
+	<title>Epos Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="static/admin.css">
 </head>
 <body>
 
-    <h1>Epos Dashboard</h1>
-    
-    
+	<h1 class="pageinfo">Epos Dashboard</h1>
+	
+	
 
-    <h2>Pages</h2>
+	<h2>Pages</h2>
 
-    {{range .}}
-        <div class="pageinfo">
-            <a href="/page/{{.URL}}/{{.Key}}">{{.Title}}</a>
-        </div>
-    {{end}}
-    
+	{{range .}}
+		<div class="pageinfo">
 
-    <h2>Actions</h2>
-    <p>
-        <form action="/admin/new" method="POST">
-            <input type="text" name="title" placeholder="New Title">
-            <input type="submit" value="Create">
+			<h4>{{.Title}}</span>
+			<a href="/page/{{.URL}}/{{.Key}}">Edit</a>
+			<a href="/page/{{.URL}}/{{.Key}}/delete">Delete</a>
+		</div>
+	{{end}}
+	
 
-        </form>
-        
-    </p>
+	<h2>Actions</h2>
+	<p>
+		<form action="/admin/new" method="POST">
+			<input type="text" name="title" placeholder="New Title">
+			<input type="submit" value="Create">
+
+		</form>
+		
+	</p>
 
 
 </body>
