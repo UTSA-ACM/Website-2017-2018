@@ -222,6 +222,7 @@ func main() {
 	r.HandleFunc("/page/{url}", markdownPage)
 	r.HandleFunc("/page/{url}/{key}", pageEditor)
 	r.HandleFunc("/page/{url}/{key}/update", updatePage)
+	r.HandleFunc("/page/{url}/{key}/delete", deletePage)
 	r.HandleFunc("/admin/new", newPage)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/verify", verify)
