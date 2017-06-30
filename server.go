@@ -134,6 +134,30 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func accountManagement(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
+	renderStatic(w, "account.html")
+}
+
+func newPassword(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
+	username := getUsername(r)
+
+	old := r.PostFormValue("old")
+	new := r.PostFormValue("new")
+
+	if updatePassword(username, old, new) {
+		fmt.Fprint(w, "Password Changed")
+		return
+	} else {
+		fmt.Fprint(w, "Change Failed")
+		return
+	}
+
+}
+
 func login(w http.ResponseWriter, r *http.Request) {
 	renderStatic(w, "login.html")
 }
@@ -203,6 +227,21 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getUsername(r *http.Request) string {
+
+	cookie, err := r.Cookie("token")
+
+	if err != nil {
+		return ""
+	}
+
+	token := cookie.Value
+
+	username := checkSession(token)
+
+	return username
+}
+
 func index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Welcome to Epos!")
 }
@@ -222,6 +261,8 @@ func main() {
 	r.HandleFunc("/page/{url}/{key}/update", updatePage)
 	r.HandleFunc("/page/{url}/{key}/delete", deletePage)
 	r.HandleFunc("/admin/new", newPage)
+	r.HandleFunc("/admin/account", accountManagement)
+	r.HandleFunc("/admin/password", newPassword)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)

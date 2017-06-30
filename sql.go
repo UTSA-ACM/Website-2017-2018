@@ -36,7 +36,7 @@ func start() {
 		}
 
 		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT, created INTEGER);" +
-			"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, hash TEXT);")
+			"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, hash TEXT);")
 
 		if err != nil {
 			log.Fatal(err)
@@ -223,6 +223,33 @@ func checkUser(name, password string) bool {
 	}
 
 	return true
+}
+
+func updatePassword(username, old, new string) bool {
+
+	if checkUser(username, old) {
+
+		newhash := getHashString(new)
+
+		stmt, err := db.Prepare("UPDATE users SET hash = ? WHERE name = ?")
+		defer stmt.Close()
+
+		if err != nil {
+			log.Print(err)
+			return false
+		}
+
+		_, err = stmt.Exec(newhash, username)
+
+		if err != nil {
+			log.Print(err)
+			return false
+		}
+
+		return true
+	}
+
+	return false
 }
 
 func contains(fi []os.FileInfo, name string) bool {
