@@ -114,7 +114,9 @@ func newPage(w http.ResponseWriter, r *http.Request) {
 	md := newMarkdown(title, "", "", "", "")
 
 	if insertMarkdown(md) == -1 {
-		log.Fatal("Insert Failed")
+		log.Print("Insert Failed")
+		http.Redirect(w, r, "/admin", 302)
+		return
 	}
 
 	http.Redirect(w, r, "/page/"+md.URL+"/"+md.Key, 302)

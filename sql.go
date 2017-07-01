@@ -69,7 +69,8 @@ func insertMarkdown(md *Markdown) int64 {
 	stmt, err := db.Prepare("INSERT INTO posts(title, url, author, summary, markdown, target, key, visible, created) values(?,?,?,?,?,?,?,?,?)")
 	defer stmt.Close()
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return -1
 	}
 
 	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Key, md.Visible, md.Datetime)
