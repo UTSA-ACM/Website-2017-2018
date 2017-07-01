@@ -44,7 +44,7 @@
 
 			<div class="float-right">
 				<div id="public-container">
-					<input type="checkbox" id="public" name="visible" value="{{ .Visible }}">
+					<input type="checkbox" id="public" name="visible" value="{{ .Visible }}" {{if .Visible}}checked{{end}}>
 					<label for="public"><span></span> Public</label>
 				</div>
 				<input type="submit" value="Save">
