@@ -106,6 +106,11 @@ func newPage(w http.ResponseWriter, r *http.Request) {
 
 	title := r.PostFormValue("title")
 
+	if title == "" {
+		http.Redirect(w, r, "/admin", 302)
+		return
+	}
+
 	md := newMarkdown(title, "", "", "", "")
 
 	if insertMarkdown(md) == -1 {
