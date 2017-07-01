@@ -8,51 +8,44 @@
 <body>
 
 	<nav>
-		<a href="/admin" class="link">
-			<div class="logoarea">
-				<img src="/static/orchid.png">
+		<a href="/admin" class="back" class="clear">
+				<svg class="icon" viewBox="2 2 11 16" width="16px">
+					<polyline fill="none" stroke="#fff" stroke-width="2px" points="10,4 4,10 10,16"/>
+				</svg>
 				<span>Dashboard</span>
-			</div>
 		</a>
 
+		<a href="/page/{{ .URL }}" class="page" class="clear">
+				<span>Page</span>
+				<svg class="icon" viewBox="2 2 11 16" width="16px">
+					<polyline fill="none" stroke="#fff" stroke-width="2px" points="4,4 10,10 4,16"/>
+				</svg>
+		</a>
 	</nav>
 
 	<main>
+
+		<h1>Edit Page</h1>
+
 		<form method="POST" action="/page/{{ .URL }}/{{ .Key }}/update">
-			<figure>
-				<input type="text" name="title" placeholder="Title" value="{{ .Title }}">	
-			</figure>
+			<input type="text" id="title" name="title" placeholder="Title" value="{{ .Title }}">
 
-			<figure>
-				<input type="text" name="author" placeholder="Author" value="{{ .Author }}">
-			</figure>
+			<input type="text" name="author" placeholder="Author" value="{{ .Author }}">
 
-			
+			<input type="text" name="target" placeholder="Redirect URL" value="{{ .Target }}">	
 
-			<figure>
-				<input type="text" name="target" placeholder="Redirect URL" value="{{ .Target }}">
-			</figure>
+			<textarea name="summary" placeholder="Summary..." id="summary">{{.Summary}}</textarea>
 
-			<figure>
-				<div class="visible">
-					Make post visible
-					<input type="checkbox" name="visible" value="{{ .Visible }}">
+			<hr/>
+
+			<textarea name="body" id="body" placeholder="#It was a dark and dreary night...">{{.Body}}</textarea>
+
+			<div class="float-right">
+				<div id="public-container">
+					<input type="checkbox" id="public" name="visible" value="{{ .Visible }}">
+					<label for="public"><span></span> Public</label>
 				</div>
-			</figure>
-
-
-			<div class="textarea-holder">
-				<figure>				
-					<textarea name="summary" placeholder="Summary..." id="summary">{{.Summary}}</textarea>
-				</figure>
-
-				<figure>
-					<textarea name="body" id="body" placeholder="It was a dark and dreary night...">{{.Body}}</textarea>
-				</figure>
-
-				<figure class="submit-holder">
-					<input type="submit" value="Save">
-				</figure>
+				<input type="submit" value="Save">
 			</div>
 		</form>
 	</main>
