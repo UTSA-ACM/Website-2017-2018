@@ -62,12 +62,14 @@ func updatePage(w http.ResponseWriter, r *http.Request) {
 	body := r.PostFormValue("body")
 	target := r.PostFormValue("target")
 	visible := r.PostFormValue("visible")
+	meta := r.PostFormValue("meta")
 
 	md.Title = title
 	md.Author = author
 	md.Summary = summary
 	md.Body = body
 	md.Target = target
+	md.Meta = meta
 
 	if visible == "" {
 		md.Visible = 0
@@ -111,7 +113,7 @@ func newPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	md := newMarkdown(title, "", "", "", "")
+	md := newMarkdown(title, "", "", "", "", "")
 
 	if insertMarkdown(md) == -1 {
 		log.Print("Insert Failed")
