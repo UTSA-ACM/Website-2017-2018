@@ -138,6 +138,28 @@ func deleteMarkdown(url string) error {
 	return nil
 }
 
+func getRowCount() int {
+
+	rows, err := db.Query("SELECT Count(*) FROM posts")
+
+	if err != nil {
+		log.Print(err)
+		return -1
+	}
+
+	var count int
+
+	for rows.Next() {
+		err := rows.Scan(&count)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return count
+}
+
 func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
 
 	var order string
@@ -149,6 +171,7 @@ func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
 	} else {
 		order = "DESC"
 		sign = "<"
+		id = getRowCount() - id + 1
 	}
 
 	query := fmt.Sprintf("SELECT * FROM posts WHERE id %v ? ORDER BY created %v LIMIT ?", sign, order)

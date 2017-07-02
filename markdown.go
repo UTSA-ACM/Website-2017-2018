@@ -161,6 +161,7 @@ func renderMarkdown(w http.ResponseWriter, md Markdown) {
 	md.Body = string(blackfriday.MarkdownCommon([]byte(md.Body)))
 
 	p := bluemonday.UGCPolicy()
+	p.AllowDataURIImages()
 
 	md.Body = p.Sanitize(md.Body)
 
@@ -176,6 +177,7 @@ func renderMarkdown(w http.ResponseWriter, md Markdown) {
 
 func sanitizeMarkdown(md *Markdown) {
 	p := bluemonday.UGCPolicy()
+	p.AllowDataURIImages()
 
 	md.Body = p.Sanitize(md.Body)
 	md.Author = p.Sanitize(md.Author)
