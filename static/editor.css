@@ -39,8 +39,11 @@ main {
   margin: 0 auto;
   font-size: 14pt; }
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
   color: #333; }
+
+a {
+  color: #43cea2; }
 
 form {
   width: 100%; }
@@ -107,11 +110,9 @@ form {
   form input[type=checkbox]:checked + label span {
     background: #43cea2;
     border: none; }
-
-#summary {
-  min-height: 7em; }
-
-#body {
-  min-height: 20em; }
+  form #summary {
+    min-height: 7em; }
+  form #body {
+    min-height: 20em; }
 
 /*# sourceMappingURL=editor.css.map */
