@@ -12,21 +12,21 @@
 
 	<nav>
 		<a href="/admin" class="back" class="clear">
-				<svg class="icon" viewBox="2 2 11 16" width="16px">
-					<polyline fill="none" stroke="#fff" stroke-width="2px" points="10,4 4,10 10,16"/>
-				</svg>
-				<span>Dashboard</span>
+			<svg class="icon" viewBox="2 2 11 16" width="16px">
+				<polyline fill="none" stroke="#fff" stroke-width="2px" points="10,4 4,10 10,16"/>
+			</svg>
+			<span>Dashboard</span>
 		</a>
 
 		<a href="/page/{{ .URL }}" class="forward" class="clear">
-				<span>Page</span>
-				<svg class="icon" viewBox="2 2 11 16" width="16px">
-					<polyline fill="none" stroke="#fff" stroke-width="2px" points="4,4 10,10 4,16"/>
-				</svg>
+			<span>Page</span>
+			<svg class="icon" viewBox="2 2 11 16" width="16px">
+				<polyline fill="none" stroke="#fff" stroke-width="2px" points="4,4 10,10 4,16"/>
+			</svg>
 		</a>
 	</nav>
 
-	<main>
+	<main class="clear">
 
 		<h1>Edit Page</h1>
 
@@ -48,7 +48,7 @@
 			
 			<div>
 				<label for="summary">Summary</label>
-				<textarea name="summary" id="summary" placeholder="Summary..." id="summary">{{.Summary}}</textarea>
+				<textarea name="summary" id="summary" placeholder="Summary...">{{.Summary}}</textarea>
 			</div>
 
 			<div>
@@ -56,11 +56,11 @@
 				<textarea name="meta" id="meta" placeholder="Meta..." id="meta">{{.Meta}}</textarea>
 			</div>
 			
-			<hr/>
+			<hr>
 
 			<div>
 				<label for="body">Page Content</label>
-				<textarea name="body" id="body" placeholder="#It was a dark and dreary night...">{{.Body}}</textarea>
+				<textarea name="body" id="body" placeholder="# It was a dark and dreary night...">{{.Body}}</textarea>
 			</div>
 			
 
@@ -69,7 +69,7 @@
 					<input type="checkbox" id="public" name="visible" value="{{ .Visible }}" {{if .Visible}}checked{{end}}>
 					<label for="public"><span></span> Public</label>
 				</div>
-				<input type="submit" value="Save">
+				<input class="btn btn-highlight" type="submit" value="Save">
 			</div>
 		</form>
 	</main>
