@@ -96,14 +96,14 @@ func updateMarkdown(url string, md *Markdown) string {
 
 	md.URL = titleToUrl(md.Title)
 
-	stmt, err := db.Prepare("UPDATE posts SET title = ?, url = ?, author = ?, summary = ?, markdown = ?, target = ?, visible = ?, meta = ? WHERE url=?")
+	stmt, err := db.Prepare("UPDATE posts SET title = ?, url = ?, author = ?, summary = ?, markdown = ?, target = ?, visible = ?, meta = ?, key = ? WHERE url=?")
 	defer stmt.Close()
 
 	if err != nil {
 		log.Fatal("updateMarkdown:", err)
 	}
 
-	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Visible, url, md.Meta)
+	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Visible, md.Meta, md.Key, url)
 
 	if err != nil {
 		log.Fatal("updateMarkdown:", err)

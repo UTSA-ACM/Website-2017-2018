@@ -1,1 +1,37 @@
 @import "main";
+
+.page-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+
+	.page-list-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: nowrap;
+
+		padding: 1em;
+		border-top: 1px solid #ccc;
+
+		&:first-child {
+			border: none;
+		}
+
+		a {
+			text-decoration: none;
+		}
+
+		.button-group {
+			display: inline-block;
+			flex-shrink: 0;
+			display: flex;
+			align-items: center;
+
+			.btn {
+				margin-left: 12px;
+				font-size: 10pt;
+			}
+		}
+	}
+}

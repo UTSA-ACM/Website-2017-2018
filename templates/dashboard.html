@@ -7,26 +7,43 @@
 </head>
 <body>
 
+	<nav>
+		<a href="/" class="back" class="clear">
+			<svg class="icon" viewBox="2 2 11 16" width="16px">
+				<polyline fill="none" stroke="#fff" stroke-width="2px" points="10,4 4,10 10,16"/>
+			</svg>
+			<span>Home</span>
+		</a>
+	</nav>
+
 	<main>
-		<h1 class="pageinfo">Epos Dashboard</h1>
+		<h1>Epos Dashboard</h1>
 	
 		<h2>Pages</h2>
-
-		{{range .}}
-			<div class="pageinfo">
-
-				<a href="/page/{{.URL}}"><h4>{{.Title}}</span></a>
-				<a href="/page/{{.URL}}/{{.Key}}">Edit</a>
-				<a href="/page/{{.URL}}/{{.Key}}/delete">Delete</a>
-			</div>
-		{{end}}
+		
+		<ul class="page-list">
+			{{range .}}
+			<li class="page-list-item">
+				<a href="/page/{{.URL}}">{{.Title}}</a>
+				<div class="button-group">
+					<a class="btn btn-inverse btn-borderless" href="/admin/{{.URL}}/rekey">Re-Key</a>
+					<a class="btn btn-warning btn-inverse btn-borderless" href="/page/{{.URL}}/{{.Key}}">Edit</a>
+					<a class="btn btn-danger btn-inverse btn-borderless" href="/page/{{.URL}}/{{.Key}}/delete">Delete</a>
+				</div>
+			</li>
+			{{end}}
+		</ul>
 		
 
 		<h2>Actions</h2>
 		<p>
 			<form action="/admin/new" method="POST">
-				<input type="text" name="title" placeholder="New Title">
-				<input type="submit" value="Create">
+
+				<div class="input-container">
+					<label for="url">Create new page</label>
+					<input type="text" name="title" placeholder="Title">
+					<input class="btn btn-highlight" type="submit" value="Create">
+				</div>
 
 			</form>
 			
