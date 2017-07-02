@@ -79,7 +79,7 @@ func updatePage(w http.ResponseWriter, r *http.Request) {
 
 	newURL := updateMarkdown(vars["url"], &md)
 
-	http.Redirect(w, r, "/page/"+newURL+"/"+md.Key, 302)
+	http.Redirect(w, r, "/pages/"+newURL+"/"+md.Key, 302)
 
 }
 
@@ -135,7 +135,7 @@ func newPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/page/"+md.URL+"/"+md.Key, 302)
+	http.Redirect(w, r, "/pages/"+md.URL+"/"+md.Key, 302)
 
 }
 
@@ -190,6 +190,12 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	t.Execute(w, r.FormValue("continue"))
 
+}
+
+func logout(w http.ResponseWriter, r *http.Request) {
+	cookie := http.Cookie{Name: "", Value: "", MaxAge: 1}
+	http.SetCookie(w, &cookie)
+	http.Redirect(w, r, "/", 302)
 }
 
 func verify(w http.ResponseWriter, r *http.Request) {
@@ -291,15 +297,16 @@ func main() {
 	r.StrictSlash(true)
 	r.HandleFunc("/", index)
 	r.HandleFunc("/admin", dashboard)
-	r.HandleFunc("/page/{url}", markdownPage)
-	r.HandleFunc("/page/{url}/{key}", pageEditor)
-	r.HandleFunc("/page/{url}/{key}/update", updatePage)
-	r.HandleFunc("/page/{url}/{key}/delete", deletePage)
+	r.HandleFunc("/pages/{url}", markdownPage)
+	r.HandleFunc("/pages/{url}/{key}", pageEditor)
+	r.HandleFunc("/pages/{url}/{key}/update", updatePage)
+	r.HandleFunc("/pages/{url}/{key}/delete", deletePage)
 	r.HandleFunc("/admin/{url}/rekey", reKey)
 	r.HandleFunc("/admin/new", newPage)
 	r.HandleFunc("/admin/account", accountManagement)
 	r.HandleFunc("/admin/password", newPassword)
 	r.HandleFunc("/login", login)
+	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)
 

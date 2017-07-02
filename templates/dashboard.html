@@ -24,11 +24,11 @@
 		<ul class="page-list">
 			{{range .}}
 			<li class="page-list-item">
-				<a href="/page/{{.URL}}">{{.Title}}</a>
+				<a href="/pages/{{.URL}}">{{.Title}}</a>
 				<div class="button-group">
 					<a class="btn btn-inverse btn-borderless" href="/admin/{{.URL}}/rekey">Re-Key</a>
-					<a class="btn btn-warning btn-inverse btn-borderless" href="/page/{{.URL}}/{{.Key}}">Edit</a>
-					<a class="btn btn-danger btn-inverse btn-borderless" href="/page/{{.URL}}/{{.Key}}/delete">Delete</a>
+					<a class="btn btn-warning btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}">Edit</a>
+					<a class="btn btn-danger btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}/delete">Delete</a>
 				</div>
 			</li>
 			{{end}}
