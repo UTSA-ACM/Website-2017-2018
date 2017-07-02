@@ -178,6 +178,7 @@ func renderMarkdown(w http.ResponseWriter, md Markdown) {
 func sanitizeMarkdown(md *Markdown) {
 	p := bluemonday.UGCPolicy()
 	p.AllowDataURIImages()
+	p.AllowAttrs("class").Globally()
 
 	md.Body = p.Sanitize(md.Body)
 	md.Author = p.Sanitize(md.Author)
