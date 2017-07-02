@@ -2,81 +2,154 @@
 <html>
 
 <head>
-	<title>Editing: {{ .Title }}</title>
+    <title>Editing: {{ .Title }}</title>
 
-	<link rel="stylesheet" type="text/css" href="/static/editor.css">
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Raleway:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/editor.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Raleway:300,400,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/static/dist/quill/quill.snow.css">
+
 </head>
 
 <body>
 
-	<nav>
-		<a href="/admin" class="back" class="clear">
-				<svg class="icon" viewBox="2 2 11 16" width="16px">
-					<polyline fill="none" stroke="#fff" stroke-width="2px" points="10,4 4,10 10,16"/>
-				</svg>
-				<span>Dashboard</span>
-		</a>
+<nav>
+    <a href="/admin" class="back" class="clear">
+        <svg class="icon" viewBox="2 2 11 16" width="16px">
+            <polyline fill="none" stroke="#fff" stroke-width="2px" points="10,4 4,10 10,16"/>
+        </svg>
+        <span>Dashboard</span>
+    </a>
 
-		<a href="/page/{{ .URL }}" class="forward" class="clear">
-				<span>Page</span>
-				<svg class="icon" viewBox="2 2 11 16" width="16px">
-					<polyline fill="none" stroke="#fff" stroke-width="2px" points="4,4 10,10 4,16"/>
-				</svg>
-		</a>
-	</nav>
+    <a href="/page/{{ .URL }}" class="forward" class="clear">
+        <span>Page</span>
+        <svg class="icon" viewBox="2 2 11 16" width="16px">
+            <polyline fill="none" stroke="#fff" stroke-width="2px" points="4,4 10,10 4,16"/>
+        </svg>
+    </a>
+</nav>
 
-	<main>
+<main>
 
-		<h1>Edit Page</h1>
+    <h1>Edit Page</h1>
 
-		<form method="POST" action="/page/{{ .URL }}/{{ .Key }}/update">
-			<div class="input-container">
-				<label for="title">Title</label>
-				<input type="text" id="title" name="title" placeholder="The Art of War" value="{{ .Title }}">
-			</div>
-			
-			<div class="input-container">
-				<label for="author">Author</label>
-				<input type="text" id="author" name="author" placeholder="Sun Tzu" value="{{ .Author }}">
-			</div>
+    <form method="POST" action="/page/{{ .URL }}/{{ .Key }}/update">
+        <div class="input-container">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" placeholder="The Art of War" value="{{ .Title }}">
+        </div>
 
-			<div class="input-container">
-				<label for="url">Redirect URL</label>
-				<input type="text" id="url" name="target" placeholder="https://example.com/" value="{{ .Target }}">	
-			</div>
-			
-			<div>
-				<label for="summary">Summary</label>
-				<textarea name="summary" id="summary" placeholder="Summary..." id="summary">{{.Summary}}</textarea>
-			</div>
+        <div class="input-container">
+            <label for="author">Author</label>
+            <input type="text" id="author" name="author" placeholder="Sun Tzu" value="{{ .Author }}">
+        </div>
 
-			<div>
-				<label for="meta">Meta</label>
-				<textarea name="meta" id="meta" placeholder="Meta..." id="meta">{{.Meta}}</textarea>
-			</div>
-			
-			<hr/>
+        <div class="input-container">
+            <label for="url">Redirect URL</label>
+            <input type="text" id="url" name="target" placeholder="https://example.com/" value="{{ .Target }}">
+        </div>
 
-			<div>
-				<label for="body">Page Content</label>
-				<textarea name="body" id="body" placeholder="#It was a dark and dreary night...">{{.Body}}</textarea>
-			</div>
-			
+        <div>
+            <label for="summary">Summary</label>
+            <textarea name="summary" id="summary" placeholder="Summary..." id="summary">{{.Summary}}</textarea>
+        </div>
 
-			<div class="float-right">
-				<div id="public-container">
-					<input type="checkbox" id="public" name="visible" value="{{ .Visible }}" {{if .Visible}}checked{{end}}>
-					<label for="public"><span></span> Public</label>
-				</div>
-				<input type="submit" value="Save">
-			</div>
-		</form>
-	</main>
+        <div>
+            <label for="meta">Meta</label>
+            <textarea name="meta" id="meta" placeholder="Meta..." id="meta">{{.Meta}}</textarea>
+        </div>
+
+        <hr/>
+
+        <div id="standalone-container">
+            <div id="toolbar-container">
+                <span class="ql-formats">
+                    <select class="ql-font"></select>
+                    <select class="ql-size"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-script" value="sub"></button>
+                    <button class="ql-script" value="super"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-header" value="1"></button>
+                    <button class="ql-header" value="2"></button>
+                    <button class="ql-blockquote"></button>
+                    <button class="ql-code-block"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                    <button class="ql-indent" value="-1"></button>
+                    <button class="ql-indent" value="+1"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-direction" value="rtl"></button>
+                    <select class="ql-align"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                    <button class="ql-image"></button>
+                    <button class="ql-video"></button>
+                    <button class="ql-formula"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-clean"></button>
+                </span>
+            </div>
+            <div id="editor-container"></div>
+        </div>
+
+        <input id="body" name="body" hidden type="text" value="">
+
+        <div class="float-right">
+            <div id="public-container">
+                <input type="checkbox" id="public" name="visible" value="{{ .Visible }}" {{if .Visible}}checked{{end}}>
+                <label for="public"><span></span> Public</label>
+            </div>
+            <input type="submit" value="Save">
+        </div>
+    </form>
+</main>
 
 </body>
 
 <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
 <script src="/static/editor.js"></script>
+
+<script type="text/javascript" src="/static/dist/katex/katex.min.js"></script>
+<script type="text/javascript" src="/static/dist/highlight/highlight.pack.js"></script>
+<script type="text/javascript" src="/static/dist/quill/quill.min.js"></script>
+
+<script type="text/javascript">
+
+    var quill = new Quill('#editor-container', {
+        modules: {
+            formula: true,
+            syntax: true,
+            toolbar: '#toolbar-container'
+        },
+        placeholder: 'Compose an epic...',
+        theme: 'snow'
+    });
+
+    // Updates the hidden form element with the HTML generated by Quill on
+    // every change.
+    var pseudoBody = document.getElementById("body");
+    quill.on('text-change', function(delta, oldDelta, source) {
+        pseudoBody.value = quill.container.firstChild.innerHTML;
+    });
+
+</script>
 
 </html>
