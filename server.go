@@ -83,6 +83,20 @@ func updatePage(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func reKey(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
+	vars := mux.Vars(r)
+
+	md := getMarkdown(vars["url"])
+
+	md.Key = generateKey()
+
+	updateMarkdown(vars["url"], &md)
+
+	http.Redirect(w, r, "/admin", 302)
+}
+
 func deletePage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -269,6 +283,7 @@ func main() {
 	r.HandleFunc("/page/{url}/{key}", pageEditor)
 	r.HandleFunc("/page/{url}/{key}/update", updatePage)
 	r.HandleFunc("/page/{url}/{key}/delete", deletePage)
+	r.HandleFunc("/page/{url}/rekey", reKey)
 	r.HandleFunc("/admin/new", newPage)
 	r.HandleFunc("/admin/account", accountManagement)
 	r.HandleFunc("/admin/password", newPassword)
