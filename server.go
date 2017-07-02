@@ -151,7 +151,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	var posts []Markdown
 
-	posts, _ = getPostsSortedByDate(0, 10, true)
+	posts, _ = getPostsSortedByDate(0, 10, false)
 
 	dashboardTemplate.Execute(w, posts)
 
