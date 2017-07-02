@@ -1,5 +1,11 @@
-$main: #FC8DA0;
-$gradient: linear-gradient(135deg, #FC8DA0, #EF6654);
+// $main: #FC8DA0;
+// $gradient: linear-gradient(135deg, #FC8DA0, #EF6654);
+
+$main: #43cea2;
+$gradient: linear-gradient(135deg, #43cea2, #007991);
+
+// $main: #F0CB35;
+// $gradient: linear-gradient(135deg, #F0CB35, #C02425);
 
 * {
 	font-family: 'Open Sans', sans-serif;
@@ -42,7 +48,7 @@ nav {
 	}
 
 	.back span { margin-left: 8px; }
-	.page span { margin-right: 8px; }
+	.forward span { margin-right: 8px; }
 }
 
 main {
@@ -58,6 +64,19 @@ h1 {
 
 form {
 	width: 100%;
+
+	label {
+		display: block;
+		margin-bottom: 4px;
+		font-size: 11pt;
+		font-weight: bold;
+		color: #444;
+	}
+
+	.input-container {
+		display: inline-block;
+		margin-right: 15px;
+	}
 
 	hr {
 		height: 1px;
@@ -150,4 +169,3 @@ form {
 #body {
 	min-height: 20em;
 }
-

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -17,7 +18,7 @@
 				<span>Dashboard</span>
 		</a>
 
-		<a href="/page/{{ .URL }}" class="page" class="clear">
+		<a href="/page/{{ .URL }}" class="forward" class="clear">
 				<span>Page</span>
 				<svg class="icon" viewBox="2 2 11 16" width="16px">
 					<polyline fill="none" stroke="#fff" stroke-width="2px" points="4,4 10,10 4,16"/>
@@ -30,17 +31,33 @@
 		<h1>Edit Page</h1>
 
 		<form method="POST" action="/page/{{ .URL }}/{{ .Key }}/update">
-			<input type="text" id="title" name="title" placeholder="Title" value="{{ .Title }}">
+			<div class="input-container">
+				<label for="title">Title</label>
+				<input type="text" id="title" name="title" placeholder="The Art of War" value="{{ .Title }}">
+			</div>
+			
+			<div class="input-container">
+				<label for="author">Author</label>
+				<input type="text" id="author" name="author" placeholder="Sun Tzu" value="{{ .Author }}">
+			</div>
 
-			<input type="text" name="author" placeholder="Author" value="{{ .Author }}">
-
-			<input type="text" name="target" placeholder="Redirect URL" value="{{ .Target }}">	
-
-			<textarea name="summary" placeholder="Summary..." id="summary">{{.Summary}}</textarea>
-
+			<div class="input-container">
+				<label for="url">Redirect URL</label>
+				<input type="text" id="url" name="target" placeholder="https://example.com/" value="{{ .Target }}">	
+			</div>
+			
+			<div>
+				<label for="summary">Summary</label>
+				<textarea name="summary" id="summary" placeholder="Summary..." id="summary">{{.Summary}}</textarea>
+			</div>
+			
 			<hr/>
 
-			<textarea name="body" id="body" placeholder="#It was a dark and dreary night...">{{.Body}}</textarea>
+			<div>
+				<label for="body">Page Content</label>
+				<textarea name="body" id="body" placeholder="#It was a dark and dreary night...">{{.Body}}</textarea>
+			</div>
+			
 
 			<div class="float-right">
 				<div id="public-container">
