@@ -27,11 +27,12 @@ type Markdown struct {
 	Target   string // This will allow you to have a pass through to another page
 	Visible  int
 	Datetime int
+	Meta     string
 }
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-func newMarkdown(title, author, summary, body, target string) *Markdown {
+func newMarkdown(title, author, summary, body, target, meta string) *Markdown {
 
 	var md Markdown
 
@@ -44,6 +45,7 @@ func newMarkdown(title, author, summary, body, target string) *Markdown {
 	md.Key = generateKey()
 	md.Visible = 0
 	md.Datetime = int(time.Now().Unix())
+	md.Meta = meta
 
 	return &md
 }
@@ -180,4 +182,5 @@ func sanitizeMarkdown(md *Markdown) {
 	md.Summary = p.Sanitize(md.Summary)
 	md.Title = p.Sanitize(md.Title)
 	md.Target = p.Sanitize(md.Target)
+	md.Meta = p.Sanitize(md.Meta)
 }

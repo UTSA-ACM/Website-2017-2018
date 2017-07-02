@@ -35,8 +35,10 @@ func start() {
 			log.Fatal(err)
 		}
 
-		_, err = db.Exec("CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT, created INTEGER);" +
-			"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, hash TEXT);")
+		_, err = db.Exec(
+			"CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT, created INTEGER, meta TEXT);" +
+				"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, hash TEXT);" +
+				"CREATE TABLE tags(id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT, post INT);")
 
 		if err != nil {
 			log.Fatal(err)
@@ -66,14 +68,14 @@ func start() {
 
 func insertMarkdown(md *Markdown) int64 {
 
-	stmt, err := db.Prepare("INSERT INTO posts(title, url, author, summary, markdown, target, key, visible, created) values(?,?,?,?,?,?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO posts(title, url, author, summary, markdown, target, key, visible, created, meta) values(?,?,?,?,?,?,?,?,?,?)")
 	defer stmt.Close()
 	if err != nil {
 		log.Print(err)
 		return -1
 	}
 
-	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Key, md.Visible, md.Datetime)
+	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Key, md.Visible, md.Datetime, md.Meta)
 
 	if err != nil {
 		log.Print(err)
@@ -94,14 +96,14 @@ func updateMarkdown(url string, md *Markdown) string {
 
 	md.URL = titleToUrl(md.Title)
 
-	stmt, err := db.Prepare("UPDATE posts SET title = ?, url = ?, author = ?, summary = ?, markdown = ?, target = ?, visible = ? WHERE url=?")
+	stmt, err := db.Prepare("UPDATE posts SET title = ?, url = ?, author = ?, summary = ?, markdown = ?, target = ?, visible = ?, meta = ? WHERE url=?")
 	defer stmt.Close()
 
 	if err != nil {
 		log.Fatal("updateMarkdown:", err)
 	}
 
-	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Visible, url)
+	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Visible, url, md.Meta)
 
 	if err != nil {
 		log.Fatal("updateMarkdown:", err)
@@ -162,7 +164,7 @@ func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
 
 	for rows.Next() {
 		var md Markdown
-		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible, &md.Datetime)
+		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible, &md.Datetime, &md.Meta)
 
 		if err != nil {
 			log.Fatal(err)
@@ -186,7 +188,7 @@ func getMarkdown(url string) Markdown {
 	var id int
 
 	for rows.Next() {
-		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible, &md.Datetime)
+		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible, &md.Datetime, &md.Meta)
 		if err != nil {
 			log.Fatal(err)
 		}
