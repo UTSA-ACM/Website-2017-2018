@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/microcosm-cc/bluemonday"
-	"github.com/russross/blackfriday"
 )
 
 // Markdown is a markdown post
@@ -157,8 +156,6 @@ func writeJson(name string, md Markdown) {
 }
 
 func renderMarkdown(w http.ResponseWriter, md Markdown) {
-
-	md.Body = string(blackfriday.MarkdownCommon([]byte(md.Body)))
 
 	p := bluemonday.UGCPolicy()
 	p.AllowDataURIImages()
