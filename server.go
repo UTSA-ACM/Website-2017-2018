@@ -283,7 +283,7 @@ func main() {
 	r.HandleFunc("/page/{url}/{key}", pageEditor)
 	r.HandleFunc("/page/{url}/{key}/update", updatePage)
 	r.HandleFunc("/page/{url}/{key}/delete", deletePage)
-	r.HandleFunc("/page/{url}/rekey", reKey)
+	r.HandleFunc("/admin/{url}/rekey", reKey)
 	r.HandleFunc("/admin/new", newPage)
 	r.HandleFunc("/admin/account", accountManagement)
 	r.HandleFunc("/admin/password", newPassword)
