@@ -24,7 +24,7 @@
 
 	<body>
 
-		<form method="POST" action="/verify">
+		<form method="POST" action="/verify?continue={{.}}">
 			<input type="hidden" name="continue">
 			<input type="text" name="name" placeholder="username">
 			<input type="password" name="password" placeholder="password">

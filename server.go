@@ -182,12 +182,24 @@ func newPassword(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	renderStatic(w, "login.html")
+	t, err := template.ParseFiles("./templates/login.html")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t.Execute(w, r.FormValue("continue"))
+
 }
 
 func verify(w http.ResponseWriter, r *http.Request) {
 	name := r.PostFormValue("name")
 	password := r.PostFormValue("password")
+
+	cont := r.URL.Query().Get("continue")
+	if cont == "" {
+		cont = "/admin"
+	}
 
 	if checkUser(name, password) {
 
@@ -196,7 +208,7 @@ func verify(w http.ResponseWriter, r *http.Request) {
 		cookie := http.Cookie{Name: "token", Value: token, MaxAge: 259200}
 		http.SetCookie(w, &cookie)
 		//fmt.Fprint(w, "cookie should be made")
-		http.Redirect(w, r, "/admin", 302)
+		http.Redirect(w, r, cont, 302)
 
 	} else {
 		cookie := http.Cookie{Name: "token", Value: "", MaxAge: 0}
