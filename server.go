@@ -223,6 +223,11 @@ func newPassword(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
+
+	if loggedIn(r) {
+		http.Redirect(w, r, "/admin", 302)
+	}
+
 	t, err := template.ParseFiles("./templates/login.html")
 
 	if err != nil {
@@ -374,7 +379,11 @@ func index(w http.ResponseWriter, r *http.Request) {
 		prev,
 		posts}
 
-	dashboardTemplate.Execute(w, data)
+	err = dashboardTemplate.Execute(w, data)
+
+	if err != nil {
+		log.Print(err)
+	}
 }
 
 func main() {

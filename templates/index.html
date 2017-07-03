@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Epos Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="static/admin.css">
+    <link rel="stylesheet" type="text/css" href="/static/admin.css">
 </head>
 <body>
 
@@ -29,9 +29,14 @@
 		
 		<ul class="page-list">
 			{{range .Posts}}
-			<li class="page-list-item">
-				<a href="/pages/{{.URL}}">{{.Title}}</a>
-			</li>
+				{{if .Visible}}
+					<li class="page-list-item">
+						<a href="/pages/{{.URL}}">{{.Title}}</a>
+						
+						{{.Author}}
+
+					</li>
+				{{end}}				
 			{{end}}
 		</ul>
 
