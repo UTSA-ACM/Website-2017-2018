@@ -173,7 +173,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	next := page + 1
 
-	if getRowCount() <= next*10 {
+	if getLastID() <= next*10 {
 		next = page
 	}
 
@@ -358,7 +358,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	next := page + 1
 
-	if getRowCount() <= next*10 {
+	if getLastID() <= next*10 {
 		next = page
 	}
 

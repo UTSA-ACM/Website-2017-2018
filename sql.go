@@ -138,9 +138,9 @@ func deleteMarkdown(url string) error {
 	return nil
 }
 
-func getRowCount() int {
+func getLastID() int {
 
-	rows, err := db.Query("SELECT Count(*) FROM posts")
+	rows, err := db.Query("SELECT seq FROM sqlite_sequence")
 
 	if err != nil {
 		log.Print(err)
@@ -178,7 +178,7 @@ func getPostsSortedByDate(id, count int, afterId bool, visibleOnly bool) ([]Mark
 	} else {
 		order = "DESC"
 		sign = "<"
-		id = getRowCount() - id + 1
+		id = getLastID() - id + 1
 	}
 
 	query := fmt.Sprintf("SELECT * FROM posts WHERE id %v ? %v ORDER BY created %v LIMIT ?", sign, visibility, order)
