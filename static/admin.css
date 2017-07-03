@@ -161,6 +161,7 @@ form {
 .page-list {
   list-style: none;
   margin: 0;
+  margin-bottom: 20px;
   padding: 0; }
   .page-list .page-list-item {
     display: flex;
@@ -181,5 +182,10 @@ form {
       .page-list .page-list-item .button-group .btn {
         margin-left: 12px;
         font-size: 10pt; }
+
+.page-btn {
+  margin-left: 20px; }
+  .page-btn.hidden {
+    display: none; }
 
 /*# sourceMappingURL=admin.css.map */
