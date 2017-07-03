@@ -40,7 +40,20 @@
 			{{end}}
 		</ul>
 
-		<a href="/admin?page={{.Prev}}">Previous</a><a href="/admin?page={{.Next}}">Next</a>
+		<div class="clear">
+			<div class="float-right">
+				<a href="/admin?page={{.Prev}}" class="btn page-btn {{if eq .Prev .Page}}hidden{{end}}">
+					<svg class="icon" viewBox="2 2 11 16" width="10px">
+						<polyline fill="none" stroke="#444" stroke-width="2px" points="10,4 4,10 10,16"/>
+					</svg>
+				</a>
+				<a href="/admin?page={{.Next}}" class="btn page-btn {{if eq .Next .Page}}hidden{{end}}">
+					<svg class="icon" viewBox="2 2 11 16" width="10px">
+						<polyline fill="none" stroke="#444" stroke-width="2px" points="4,4 10,10 4,16"/>
+					</svg>
+				</a>
+			</div>
+		</div>
 		
 
 		<h2>Actions</h2>
