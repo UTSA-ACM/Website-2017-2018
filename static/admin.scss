@@ -3,6 +3,7 @@
 .page-list {
 	list-style: none;
 	margin: 0;
+	margin-bottom: 20px;
 	padding: 0;
 
 	.page-list-item {
@@ -33,5 +34,13 @@
 				font-size: 10pt;
 			}
 		}
+	}
+}
+
+.page-btn {
+	margin-left: 20px;
+
+	&.hidden {
+		display: none;
 	}
 }
