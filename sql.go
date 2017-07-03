@@ -160,10 +160,17 @@ func getRowCount() int {
 	return count
 }
 
-func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
+func getPostsSortedByDate(id, count int, afterId bool, visibleOnly bool) ([]Markdown, int) {
 
 	var order string
 	var sign string
+	var visibility string
+
+	if visibleOnly {
+		visibility = "1"
+	} else {
+		visibility = "0"
+	}
 
 	if afterId {
 		order = "ASC"
@@ -174,7 +181,7 @@ func getPostsSortedByDate(id, count int, afterId bool) ([]Markdown, int) {
 		id = getRowCount() - id + 1
 	}
 
-	query := fmt.Sprintf("SELECT * FROM posts WHERE id %v ? ORDER BY created %v LIMIT ?", sign, order)
+	query := fmt.Sprintf("SELECT * FROM posts WHERE id %v ? AND visible = %v ORDER BY created %v LIMIT ?", sign, visibility, order)
 
 	rows, err := db.Query(query, id, count)
 	defer rows.Close()

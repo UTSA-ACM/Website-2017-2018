@@ -169,7 +169,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	var posts []Markdown
 
-	posts, _ = getPostsSortedByDate(page*10, 10, false)
+	posts, _ = getPostsSortedByDate(page*10, 10, false, false)
 
 	next := page + 1
 
@@ -354,7 +354,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	var posts []Markdown
 
-	posts, _ = getPostsSortedByDate(page*10, 10, false)
+	posts, _ = getPostsSortedByDate(page*10, 10, false, true)
 
 	next := page + 1
 

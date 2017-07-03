@@ -29,14 +29,14 @@
 		
 		<ul class="page-list">
 			{{range .Posts}}
-				{{if .Visible}}
-					<li class="page-list-item">
-						<a href="/pages/{{.URL}}">{{.Title}}</a>
-						
-						{{.Author}}
+			
+				<li class="page-list-item">
+					<a href="/pages/{{.URL}}">{{.Title}}</a>
+					
+					{{.Author}}
 
-					</li>
-				{{end}}				
+				</li>
+						
 			{{end}}
 		</ul>
 
