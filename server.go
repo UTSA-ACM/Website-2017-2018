@@ -386,6 +386,24 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func notFound(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(404)
+
+	t, err := template.ParseFiles("./templates/404.html")
+
+	if err != nil {
+		log.Print(err)
+		http.Redirect(w, r, "/", 302)
+	}
+
+	err = t.Execute(w, nil)
+
+	if err != nil {
+		log.Print(err)
+		http.Redirect(w, r, "/", 302)
+	}
+}
+
 func main() {
 
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -411,6 +429,8 @@ func main() {
 
 	statichandler := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static", statichandler))
+
+	r.NotFoundHandler = http.HandlerFunc(notFound)
 
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":8080", nil))
