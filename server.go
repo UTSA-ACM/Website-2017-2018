@@ -9,6 +9,8 @@ import (
 
 	"log"
 
+	"strconv"
+
 	mux "github.com/gorilla/mux"
 )
 
@@ -143,6 +145,22 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	checkLogin(w, r)
 
+	page := 0
+
+	qpage := r.URL.Query().Get("page")
+
+	if qpage != "" {
+		var err error
+		tpage, err := strconv.ParseInt(qpage, 0, 64)
+
+		if err != nil {
+			log.Print(err)
+			http.Redirect(w, r, "/admin", 302)
+			return
+		}
+		page = int(tpage)
+	}
+
 	dashboardTemplate, err := template.ParseFiles("templates/dashboard.html")
 
 	if err != nil {
@@ -151,9 +169,20 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	var posts []Markdown
 
-	posts, _ = getPostsSortedByDate(0, 10, false)
+	posts, _ = getPostsSortedByDate(page*10, 10, false)
 
-	dashboardTemplate.Execute(w, posts)
+	data := struct {
+		Page  int
+		Next  int
+		Prev  int
+		Posts []Markdown
+	}{
+		page,
+		page + 1,
+		page - 1,
+		posts}
+
+	dashboardTemplate.Execute(w, data)
 
 }
 

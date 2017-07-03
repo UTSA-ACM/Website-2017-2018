@@ -28,7 +28,7 @@
 		<h2>Pages</h2>
 		
 		<ul class="page-list">
-			{{range .}}
+			{{range .Posts}}
 			<li class="page-list-item">
 				<a href="/pages/{{.URL}}">{{.Title}}</a>
 				<div class="button-group">
@@ -39,6 +39,8 @@
 			</li>
 			{{end}}
 		</ul>
+
+		<a href="/admin?page={{.Prev}}">Previous</a><a href="/admin?page={{.Next}}">Next</a>
 		
 
 		<h2>Actions</h2>
