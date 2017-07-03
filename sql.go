@@ -94,7 +94,15 @@ func insertMarkdown(md *Markdown) int64 {
 
 func updateMarkdown(url string, md *Markdown) string {
 
+	if md.Title == "" {
+		return ""
+	}
+
 	md.URL = titleToUrl(md.Title)
+
+	if md.URL == "" {
+		return ""
+	}
 
 	stmt, err := db.Prepare("UPDATE posts SET title = ?, url = ?, author = ?, summary = ?, markdown = ?, target = ?, visible = ?, meta = ?, key = ? WHERE url=?")
 	defer stmt.Close()
