@@ -171,6 +171,18 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	posts, _ = getPostsSortedByDate(page*10, 10, false)
 
+	next := page + 1
+
+	if getRowCount() < next*10 {
+		next = page
+	}
+
+	prev := page - 1
+
+	if page == 0 {
+		prev = 0
+	}
+
 	data := struct {
 		Page  int
 		Next  int
@@ -178,8 +190,8 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		Posts []Markdown
 	}{
 		page,
-		page + 1,
-		page - 1,
+		next,
+		prev,
 		posts}
 
 	dashboardTemplate.Execute(w, data)
