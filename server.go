@@ -18,6 +18,11 @@ func markdownPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	md := getMarkdown(vars["url"])
 
+	if md.Title == "" {
+		notFound(w, r)
+		return
+	}
+
 	if md.Target != "" {
 		http.Redirect(w, r, md.Target, 302)
 	}
@@ -30,6 +35,11 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	md := getMarkdown(vars["url"])
+
+	if md.Title == "" {
+		notFound(w, r)
+		return
+	}
 
 	if md.Key != vars["key"] {
 		fmt.Fprint(w, "Access Denied")
@@ -52,6 +62,11 @@ func updatePage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	md := getMarkdown(vars["url"])
+
+	if md.Title == "" {
+		notFound(w, r)
+		return
+	}
 
 	if md.Key != vars["key"] {
 		fmt.Fprint(w, "Access Denied")
@@ -92,6 +107,11 @@ func reKey(w http.ResponseWriter, r *http.Request) {
 
 	md := getMarkdown(vars["url"])
 
+	if md.Title == "" {
+		notFound(w, r)
+		return
+	}
+
 	md.Key = generateKey()
 
 	updateMarkdown(vars["url"], &md)
@@ -103,6 +123,11 @@ func deletePage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	md := getMarkdown(vars["url"])
+
+	if md.Title == "" {
+		notFound(w, r)
+		return
+	}
 
 	if md.Key != vars["key"] {
 		fmt.Fprint(w, "Access Denied")
