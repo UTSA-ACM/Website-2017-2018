@@ -15,7 +15,7 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
-	page := 0
+	pageID := 0
 
 	qpage := r.URL.Query().Get("page")
 
@@ -28,7 +28,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/admin", 302)
 			return
 		}
-		page = int(tpage)
+		pageID = int(tpage)
 	}
 
 	dashboardTemplate, err := template.ParseFiles("templates/index.html")
@@ -37,19 +37,19 @@ func index(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	var posts []Markdown
+	var posts []Page
 
-	posts, _ = getPostsSortedByDate(page*10, 10, false, true)
+	posts, _ = getPagesSortedByDate(pageID*10, 10, false, true)
 
-	next := page + 1
+	next := pageID + 1
 
 	if getLastID() <= next*10 {
-		next = page
+		next = pageID
 	}
 
-	prev := page - 1
+	prev := pageID - 1
 
-	if page == 0 {
+	if pageID == 0 {
 		prev = 0
 	}
 
@@ -57,9 +57,9 @@ func index(w http.ResponseWriter, r *http.Request) {
 		Page  int
 		Next  int
 		Prev  int
-		Posts []Markdown
+		Posts []Page
 	}{
-		page,
+		pageID,
 		next,
 		prev,
 		posts}
@@ -99,12 +99,12 @@ func main() {
 	r.StrictSlash(true)
 	r.HandleFunc("/", index)
 	r.HandleFunc("/admin", dashboard)
-	r.HandleFunc("/pages/{url}", markdownPage)
+	r.HandleFunc("/pages/{url}", getPage)
 	r.HandleFunc("/pages/{url}/{key}", pageEditor)
 	r.HandleFunc("/pages/{url}/{key}/update", updatePage)
 	r.HandleFunc("/pages/{url}/{key}/delete", deletePage)
 	r.HandleFunc("/admin/{url}/rekey", reKey)
-	r.HandleFunc("/admin/new", newPage)
+	r.HandleFunc("/admin/new", createPage)
 	r.HandleFunc("/admin/account", accountManagement)
 	r.HandleFunc("/admin/password", newPassword)
 	r.HandleFunc("/login", login)

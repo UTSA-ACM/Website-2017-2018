@@ -66,7 +66,7 @@ func start() {
 
 }
 
-func insertMarkdown(md *Markdown) int64 {
+func insertDBPage(page *Page) int64 {
 
 	stmt, err := db.Prepare("INSERT INTO posts(title, url, author, summary, markdown, target, key, visible, created, meta) values(?,?,?,?,?,?,?,?,?,?)")
 	defer stmt.Close()
@@ -75,7 +75,7 @@ func insertMarkdown(md *Markdown) int64 {
 		return -1
 	}
 
-	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Key, md.Visible, md.Datetime, md.Meta)
+	res, err := stmt.Exec(page.Title, page.URL, page.Author, page.Summary, page.Body, page.Target, page.Key, page.Visible, page.Datetime, page.Meta)
 
 	if err != nil {
 		log.Print(err)
@@ -92,15 +92,15 @@ func insertMarkdown(md *Markdown) int64 {
 	return id
 }
 
-func updateMarkdown(url string, md *Markdown) string {
+func updateDBPage(url string, page *Page) string {
 
-	if md.Title == "" {
+	if page.Title == "" {
 		return ""
 	}
 
-	md.URL = titleToUrl(md.Title)
+	page.URL = titleToUrl(page.Title)
 
-	if md.URL == "" {
+	if page.URL == "" {
 		return ""
 	}
 
@@ -108,25 +108,25 @@ func updateMarkdown(url string, md *Markdown) string {
 	defer stmt.Close()
 
 	if err != nil {
-		log.Fatal("updateMarkdown:", err)
+		log.Fatal("updateDBPage:", err)
 	}
 
-	res, err := stmt.Exec(md.Title, md.URL, md.Author, md.Summary, md.Body, md.Target, md.Visible, md.Meta, md.Key, url)
+	res, err := stmt.Exec(page.Title, page.URL, page.Author, page.Summary, page.Body, page.Target, page.Visible, page.Meta, page.Key, url)
 
 	if err != nil {
-		log.Fatal("updateMarkdown:", err)
+		log.Fatal("updateDBPage:", err)
 	}
 
 	_, err = res.LastInsertId()
 
 	if err != nil {
-		log.Fatal("updateMarkdown:", err)
+		log.Fatal("updateDBPage:", err)
 	}
 
-	return md.URL
+	return page.URL
 }
 
-func deleteMarkdown(url string) error {
+func deleteDBPage(url string) error {
 
 	stmt, err := db.Prepare("DELETE FROM posts WHERE url=?")
 	defer stmt.Close()
@@ -168,7 +168,7 @@ func getLastID() int {
 	return count
 }
 
-func getPostsSortedByDate(id, count int, afterId bool, visibleOnly bool) ([]Markdown, int) {
+func getPagesSortedByDate(id, count int, afterId bool, visibleOnly bool) ([]Page, int) {
 
 	var order string
 	var sign string
@@ -198,42 +198,42 @@ func getPostsSortedByDate(id, count int, afterId bool, visibleOnly bool) ([]Mark
 		log.Fatal(err)
 	}
 
-	var posts []Markdown
+	var posts []Page
 
 	for rows.Next() {
-		var md Markdown
-		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible, &md.Datetime, &md.Meta)
+		var page Page
+		err = rows.Scan(&id, &page.Title, &page.URL, &page.Author, &page.Summary, &page.Body, &page.Target, &page.Key, &page.Visible, &page.Datetime, &page.Meta)
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		posts = append(posts, md)
+		posts = append(posts, page)
 	}
 
 	return posts, id
 
 }
 
-func getMarkdown(url string) Markdown {
+func getDBPage(url string) Page {
 	rows, err := db.Query("SELECT * FROM posts WHERE url=?", url)
 	defer rows.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var md Markdown
+	var page Page
 	var id int
 
 	for rows.Next() {
-		err = rows.Scan(&id, &md.Title, &md.URL, &md.Author, &md.Summary, &md.Body, &md.Target, &md.Key, &md.Visible, &md.Datetime, &md.Meta)
+		err = rows.Scan(&id, &page.Title, &page.URL, &page.Author, &page.Summary, &page.Body, &page.Target, &page.Key, &page.Visible, &page.Datetime, &page.Meta)
 		if err != nil {
 			log.Fatal(err)
 		}
 		break
 	}
 
-	return md
+	return page
 }
 
 func checkUser(name, password string) bool {

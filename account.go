@@ -12,7 +12,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	checkLogin(w, r)
 
-	page := 0
+	pageID := 0
 
 	qpage := r.URL.Query().Get("page")
 
@@ -25,7 +25,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/admin", 302)
 			return
 		}
-		page = int(tpage)
+		pageID = int(tpage)
 	}
 
 	dashboardTemplate, err := template.ParseFiles("templates/dashboard.html")
@@ -34,19 +34,19 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	var posts []Markdown
+	var posts []Page
 
-	posts, _ = getPostsSortedByDate(page*10, 10, false, false)
+	posts, _ = getPagesSortedByDate(pageID*10, 10, false, false)
 
-	next := page + 1
+	next := pageID + 1
 
 	if getLastID() <= next*10 {
-		next = page
+		next = pageID
 	}
 
-	prev := page - 1
+	prev := pageID - 1
 
-	if page == 0 {
+	if pageID == 0 {
 		prev = 0
 	}
 
@@ -54,9 +54,9 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		Page  int
 		Next  int
 		Prev  int
-		Posts []Markdown
+		Posts []Page
 	}{
-		page,
+		pageID,
 		next,
 		prev,
 		posts}

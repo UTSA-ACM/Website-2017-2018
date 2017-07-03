@@ -15,8 +15,8 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-// Markdown is a markdown post
-type Markdown struct {
+// Page is a markdown post
+type Page struct {
 	Title    string
 	URL      string
 	Author   string
@@ -31,9 +31,9 @@ type Markdown struct {
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-func newMarkdown(title, author, summary, body, target, meta string) *Markdown {
+func newPage(title, author, summary, body, target, meta string) *Page {
 
-	var md Markdown
+	var md Page
 
 	md.Title = title
 	md.URL = titleToUrl(title)
@@ -81,7 +81,7 @@ func titleToUrl(title string) string {
 
 }
 
-func templateString(tstring string, data Markdown) (string, error) {
+func templateString(tstring string, data Page) (string, error) {
 	var tbuf bytes.Buffer
 
 	t := template.New(tstring)
@@ -127,12 +127,12 @@ func templateString(tstring string, data Markdown) (string, error) {
 
 // }
 
-func readJson(name string) Markdown {
+func readJson(name string) Page {
 	b, err := ioutil.ReadFile("json/" + name + ".json")
 	if err != nil {
 		fmt.Print(err)
 	}
-	var md Markdown
+	var md Page
 	json.Unmarshal(b, &md)
 
 	md.Body = readMD(md.Title)
@@ -150,12 +150,12 @@ func readMD(name string) string {
 	return string(b)
 }
 
-func writeJson(name string, md Markdown) {
+func writeJson(name string, md Page) {
 	b, _ := json.Marshal(md)
 	ioutil.WriteFile("markdown/"+name+".json", b, 0660)
 }
 
-func renderMarkdown(w http.ResponseWriter, md Markdown) {
+func renderPage(w http.ResponseWriter, md Page) {
 
 	p := bluemonday.UGCPolicy()
 	p.AllowDataURIImages()
@@ -173,7 +173,7 @@ func renderMarkdown(w http.ResponseWriter, md Markdown) {
 
 }
 
-func sanitizeMarkdown(md *Markdown) {
+func sanitizePage(md *Page) {
 	p := bluemonday.UGCPolicy()
 	p.AllowDataURIImages()
 	p.AllowAttrs("class").Globally()

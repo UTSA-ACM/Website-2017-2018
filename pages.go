@@ -8,41 +8,41 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func markdownPage(w http.ResponseWriter, r *http.Request) {
+func getPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	md := getMarkdown(vars["url"])
+	page := getDBPage(vars["url"])
 
-	if md.Title == "" {
+	if page.Title == "" {
 		notFound(w, r)
 		return
 	}
 
-	if md.Target != "" {
-		http.Redirect(w, r, md.Target, 302)
+	if page.Target != "" {
+		http.Redirect(w, r, page.Target, 302)
 	}
 
-	renderMarkdown(w, md)
+	renderPage(w, page)
 }
 
 func pageEditor(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 
-	md := getMarkdown(vars["url"])
+	page := getDBPage(vars["url"])
 
-	if md.Title == "" {
+	if page.Title == "" {
 		notFound(w, r)
 		return
 	}
 
-	if md.Key != vars["key"] {
+	if page.Key != vars["key"] {
 		fmt.Fprint(w, "Access Denied")
 		return
 	}
 
-	sanitizeMarkdown(&md)
+	sanitizePage(&page)
 
-	out, err := templateString("editor.html", md)
+	out, err := templateString("editor.html", page)
 
 	if err != nil {
 		fmt.Print(err)
@@ -55,14 +55,14 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 func updatePage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	md := getMarkdown(vars["url"])
+	page := getDBPage(vars["url"])
 
-	if md.Title == "" {
+	if page.Title == "" {
 		notFound(w, r)
 		return
 	}
 
-	if md.Key != vars["key"] {
+	if page.Key != vars["key"] {
 		fmt.Fprint(w, "Access Denied")
 		return
 	}
@@ -75,26 +75,26 @@ func updatePage(w http.ResponseWriter, r *http.Request) {
 	visible := r.PostFormValue("visible")
 	meta := r.PostFormValue("meta")
 
-	md.Title = title
-	md.Author = author
-	md.Summary = summary
-	md.Body = body
-	md.Target = target
-	md.Meta = meta
+	page.Title = title
+	page.Author = author
+	page.Summary = summary
+	page.Body = body
+	page.Target = target
+	page.Meta = meta
 
 	if visible == "" {
-		md.Visible = 0
+		page.Visible = 0
 	} else {
-		md.Visible = 1
+		page.Visible = 1
 	}
 
-	newURL := updateMarkdown(vars["url"], &md)
+	newURL := updateDBPage(vars["url"], &page)
 
 	if newURL == "" {
-		http.Redirect(w, r, "/pages/"+md.URL+"/"+md.Key, 302)
+		http.Redirect(w, r, "/pages/"+page.URL+"/"+page.Key, 302)
 	}
 
-	http.Redirect(w, r, "/pages/"+newURL+"/"+md.Key, 302)
+	http.Redirect(w, r, "/pages/"+newURL+"/"+page.Key, 302)
 
 }
 
@@ -103,16 +103,16 @@ func reKey(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 
-	md := getMarkdown(vars["url"])
+	page := getDBPage(vars["url"])
 
-	if md.Title == "" {
+	if page.Title == "" {
 		notFound(w, r)
 		return
 	}
 
-	md.Key = generateKey()
+	page.Key = generateKey()
 
-	updateMarkdown(vars["url"], &md)
+	updateDBPage(vars["url"], &page)
 
 	http.Redirect(w, r, "/admin", 302)
 }
@@ -120,24 +120,24 @@ func reKey(w http.ResponseWriter, r *http.Request) {
 func deletePage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	md := getMarkdown(vars["url"])
+	page := getDBPage(vars["url"])
 
-	if md.Title == "" {
+	if page.Title == "" {
 		notFound(w, r)
 		return
 	}
 
-	if md.Key != vars["key"] {
+	if page.Key != vars["key"] {
 		fmt.Fprint(w, "Access Denied")
 		return
 	}
 
-	deleteMarkdown(md.URL)
+	deleteDBPage(page.URL)
 
 	http.Redirect(w, r, "/admin", 302)
 }
 
-func newPage(w http.ResponseWriter, r *http.Request) {
+func createPage(w http.ResponseWriter, r *http.Request) {
 
 	checkLogin(w, r)
 	if r.Method != "PUT" {
@@ -158,9 +158,9 @@ func newPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	md := newMarkdown(title, "", "", "", "", "")
+	page := newPage(title, "", "", "", "", "")
 
-	if insertMarkdown(md) == -1 {
+	if insertDBPage(page) == -1 {
 
 		ajaxResponse(w, r, false, "", "Page creation failed")
 
@@ -170,6 +170,6 @@ func newPage(w http.ResponseWriter, r *http.Request) {
 
 	//http.Redirect(w, r, "/pages/"+md.URL+"/"+md.Key, 302)
 
-	ajaxResponse(w, r, true, "/pages/"+md.URL+"/"+md.Key, "")
+	ajaxResponse(w, r, true, "/pages/"+page.URL+"/"+page.Key, "")
 
 }
