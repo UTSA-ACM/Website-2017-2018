@@ -222,7 +222,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
-	cookie := http.Cookie{Name: "", Value: "", MaxAge: 1}
+	cookie := http.Cookie{Name: "token", Value: "", MaxAge: 1}
 	http.SetCookie(w, &cookie)
 	http.Redirect(w, r, "/", 302)
 }
