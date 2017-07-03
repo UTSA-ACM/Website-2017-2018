@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>404</title>
+	</head>
+
+	<style>
+		body {
+			position: absolute;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		text {
+			font-family: 'Open Sans', sans-serif;
+			font-weight: bold;
+			font-size: 126pt;
+
+			fill: url(#gradient);
+		}
+
+		#image {
+			width: 90%;
+			max-width: 500px;
+		}
+	</style>
+
+	<body>
+		<svg id="image" viewbox="0 0 300 150">
+			<defs>
+				<linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+					<stop offset="0%" stop-color="#43cea2"/>
+					<stop offset="100%" stop-color="#007991"/>
+				</linearGradient>
+			</defs>
+
+			<text x="6" y="90%">404</text>
+		</svg>
+	</body>
+</html>
