@@ -115,18 +115,23 @@ hr {
     border: none;
     font-weight: bold; }
 
-form {
+.error {
+    display: none;
+    color: #ca4949;;
+    padding: 5px 0 10px 0;
+}
+#form {
   width: 100%; }
-  form label {
+  #form label {
     display: block;
     margin-bottom: 4px;
     font-size: 11pt;
     font-weight: bold;
     color: #444; }
-  form .input-container {
+  #form .input-container {
     display: inline-block;
     margin-right: 15px; }
-  form input[type=text], form textarea {
+  #form input[type=text], #form textarea {
     max-width: 100%;
     font-size: inherit;
     border: 1px solid #ccc;
@@ -137,13 +142,13 @@ form {
     margin: 0 0 20px 0;
     text-overflow: ellipsis;
     color: #333; }
-  form textarea {
+  #form textarea {
     resize: none;
     overflow: hidden;
     width: 100%; }
-  form input[type=checkbox] {
+  #form input[type=checkbox] {
     display: none; }
-  form input[type=checkbox] + label span {
+  #form input[type=checkbox] + label span {
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: inline-block;
     width: 14px;
@@ -152,9 +157,9 @@ form {
     border-radius: 2px;
     background: #eee;
     border: 1px solid #aaa; }
-  form input[type=checkbox]:hover + label span {
+  #form input[type=checkbox]:hover + label span {
     background: #ccc; }
-  form input[type=checkbox]:checked + label span {
+  #form input[type=checkbox]:checked + label span {
     background: #43cea2;
     border: none; }
 
