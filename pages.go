@@ -140,7 +140,7 @@ func deletePage(w http.ResponseWriter, r *http.Request) {
 func createPage(w http.ResponseWriter, r *http.Request) {
 
 	checkLogin(w, r)
-	if r.Method != "PUT" {
+	if r.Method != "POST" {
 		//http.Redirect(w, r, "/admin", 302)
 
 		//t := [3]int{1, 2, 3}
