@@ -58,16 +58,13 @@
 
 		<h2>Actions</h2>
 		<p>
-			<form action="/admin/new" method="POST">
-
+			<form>
 				<div class="input-container">
 					<label for="url">Create new page</label>
 					<input type="text" name="title" placeholder="Title">
-					<input class="btn btn-highlight" type="submit" value="Create">
+					<input class="btn btn-highlight" type="submit" onclick=createPage() value="Create">
 				</div>
-
 			</form>
-			
 		</p>
 		<p>
 			<a href="/admin/account">Manage Account</a>
@@ -75,4 +72,69 @@
 	</main>
 
 </body>
+
+<script>
+
+	function createPage() {
+
+	    var pageTitle = document.getElementsByName("title")[0].value;
+	    var params = {
+			"title": pageTitle
+		};
+
+	    makeRequest("POST", "/admin/new", null, params);
+
+	}
+
+	function onSuccess(event) {
+		var r = event.target;
+		var response = JSON.parse(r.responseText);
+        console.log(response);
+
+		if (response.success) {
+            var redirectTo = response.data;
+            window.location.replace(redirectTo);
+		} else {
+		    window.alert(response.error);
+		}
+
+	}
+
+	function onFailure(event) {
+		var r = event.target;
+	}
+
+    function makeRequest(method, uri, queryParams, formParams, success, failure) {
+
+        var httpRequest = new XMLHttpRequest();
+
+        if (!httpRequest) {
+            console.error("Fatal: Could not create XHR instance :(");
+            return false;
+        }
+
+        httpRequest.open(method, uri);
+        httpRequest.onload = onSuccess;
+        httpRequest.onerror = onFailure;
+
+        httpRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+        if (method === "POST") {
+            httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            httpRequest.send(encodeParams(formParams));
+        } else {
+            httpRequest.send();
+        }
+
+    }
+
+    function encodeParams(params) {
+        var out = [];
+        for (var key in params) {
+            out.push(key + '=' + encodeURIComponent(params[key]));
+        }
+        return out.join('&');
+    }
+</script>
+
 </html>
