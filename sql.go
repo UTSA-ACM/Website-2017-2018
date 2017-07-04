@@ -168,8 +168,8 @@ func getLastID() int {
 	return count
 }
 
-func getRowCount() int {
-	rows, err := db.Query("SELECT Count(*) FROM posts")
+func getVisibleRowCount() int {
+	rows, err := db.Query("SELECT Count(*) FROM posts WHERE visible = 1")
 
 	if err != nil {
 		log.Print(err)
@@ -190,30 +190,19 @@ func getRowCount() int {
 	return count
 }
 
-func getPagesSortedByDate(id, count int, afterId bool, visibleOnly bool) ([]Page, int) {
+func getPagesSortedByDate(page, count int, visibleOnly bool) ([]Page, int) {
 
-	var order string
-	var sign string
 	var visibility string
 
 	if visibleOnly {
-		visibility = "AND visible = 1"
+		visibility = "WHERE visible = 1"
 	} else {
 		visibility = ""
 	}
 
-	if afterId {
-		order = "ASC"
-		sign = ">"
-	} else {
-		order = "DESC"
-		sign = "<"
-		id = getLastID() - id + 1
-	}
+	query := fmt.Sprintf("SELECT * FROM posts %v ORDER BY created DESC LIMIT ? OFFSET ?", visibility)
 
-	query := fmt.Sprintf("SELECT * FROM posts WHERE id %v ? %v ORDER BY created %v LIMIT ?", sign, visibility, order)
-
-	rows, err := db.Query(query, id, count)
+	rows, err := db.Query(query, count, count*page)
 	defer rows.Close()
 
 	if err != nil {
@@ -221,6 +210,8 @@ func getPagesSortedByDate(id, count int, afterId bool, visibleOnly bool) ([]Page
 	}
 
 	var posts []Page
+
+	var id int
 
 	for rows.Next() {
 		var page Page

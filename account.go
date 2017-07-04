@@ -36,7 +36,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	var posts []Page
 
-	posts, _ = getPagesSortedByDate(pageID*10, 10, false, false)
+	posts, _ = getPagesSortedByDate(pageID, 10, false)
 
 	next := pageID + 1
 

@@ -39,11 +39,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	var posts []Page
 
-	posts, _ = getPagesSortedByDate(pageID*10, 10, false, true)
+	postCount := 10
+
+	posts, _ = getPagesSortedByDate(pageID, postCount, true)
 
 	next := pageID + 1
 
-	if getRowCount() <= next*10 {
+	if getVisibleRowCount() <= next*10 {
 		next = pageID
 	}
 
