@@ -43,7 +43,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	next := pageID + 1
 
-	if getLastID() <= next*10 {
+	if getRowCount() <= next*10 {
 		next = pageID
 	}
 
