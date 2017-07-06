@@ -11,6 +11,7 @@ import (
 func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	checkLogin(w, r)
+	username := getUsername(r)
 
 	pageID := 0
 
@@ -28,7 +29,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		pageID = int(tpage)
 	}
 
-	dashboardTemplate, err := template.ParseFiles("templates/dashboard.html")
+	dashboardTemplate, err := template.ParseFiles("templates/dashboard.html", "templates/nav.html")
 
 	if err != nil {
 		log.Fatal(err)
@@ -51,11 +52,13 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Page  int
-		Next  int
-		Prev  int
-		Posts []Page
+		Username string
+		Page     int
+		Next     int
+		Prev     int
+		Posts    []Page
 	}{
+		username,
 		pageID,
 		next,
 		prev,
