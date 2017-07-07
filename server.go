@@ -31,7 +31,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		pageID = int(tpage)
 	}
 
-	dashboardTemplate, err := template.ParseFiles("templates/index.html")
+	dashboardTemplate, err := template.ParseFiles("templates/index.html", "templates/nav.html")
 
 	if err != nil {
 		log.Fatal(err)

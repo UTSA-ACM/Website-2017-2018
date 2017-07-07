@@ -2,15 +2,15 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"
 	"regexp"
 	"text/template"
 	"time"
+
+	"log"
 
 	"github.com/microcosm-cc/bluemonday"
 )
@@ -105,71 +105,17 @@ func templateString(tstring string, data Page) (string, error) {
 
 }
 
-// func readMarkdown(filename string) Markdown {
-// 	b, err := ioutil.ReadFile("Markdown/" + filename + ".md")
-// 	if err != nil {
-// 		fmt.Print(err)
-// 	}
+func renderPage(w http.ResponseWriter, page Page) {
 
-// 	var md Markdown
-// 	md.Body = string(b)
+	sanitizePage(&page)
 
-// 	return md
-// }
+	t, err := template.ParseFiles("templates/markdown.html", "templates/nav.html")
 
-// func renderMarkdown(filename string) string {
-
-// 	md := readMarkdown(filename)
-
-// 	tstring, _ := templateString("Markdown.html", md)
-
-// 	return tstring
-
-// }
-
-func readJson(name string) Page {
-	b, err := ioutil.ReadFile("json/" + name + ".json")
-	if err != nil {
-		fmt.Print(err)
-	}
-	var md Page
-	json.Unmarshal(b, &md)
-
-	md.Body = readMD(md.Title)
-
-	return md
-}
-
-func readMD(name string) string {
-	b, err := ioutil.ReadFile("markdown/" + name + ".md")
+	err = t.Execute(w, page)
 
 	if err != nil {
-		fmt.Print(err)
+		log.Print(err)
 	}
-
-	return string(b)
-}
-
-func writeJson(name string, md Page) {
-	b, _ := json.Marshal(md)
-	ioutil.WriteFile("markdown/"+name+".json", b, 0660)
-}
-
-func renderPage(w http.ResponseWriter, md Page) {
-
-	p := bluemonday.UGCPolicy()
-	p.AllowDataURIImages()
-	p.AllowAttrs("class").Globally()
-
-	md.Body = p.Sanitize(md.Body)
-
-	out, err := templateString("markdown.html", md)
-
-	if err != nil {
-		fmt.Print(err)
-	}
-
-	fmt.Fprint(w, out)
 
 }
 
