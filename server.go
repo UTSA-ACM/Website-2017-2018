@@ -109,13 +109,16 @@ func main() {
 	r.HandleFunc("/admin/new", createPage)
 	r.HandleFunc("/admin/account", accountManagement)
 	r.HandleFunc("/admin/password", newPassword)
+	r.HandleFunc("/admin/files", fileManagement)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)
 
 	statichandler := http.FileServer(http.Dir("./static/"))
+	fileshandler := http.FileServer(http.Dir("./files/"))
 	http.Handle("/static/", http.StripPrefix("/static", statichandler))
+	http.Handle("/files/", http.StripPrefix("/files", fileshandler))
 
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 

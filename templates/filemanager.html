@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Epos Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="/static/admin.css">
+</head>
+<body>
+
+	{{template "nav" .}}
+
+	<main>
+		<h1>File Management</h1>
+	
+		<h2>Files</h2>
+		
+		<ul class="page-list">
+			{{range .}}
+			
+				<li class="page-list-item">
+					<a href="/files/{{.Name}}">{{.Name}}</a>
+				</li>
+						
+			{{end}}
+		</ul>
+
+		
+	</main>
+
+</body>
+</html>
