@@ -6488,8 +6488,15 @@ var BaseTooltip = function (_Tooltip) {
             if (!value) break;
             var range = this.quill.getSelection(true);
 
+            var newValue = value;
+            if (value.includes(",")) {
+              var values = value.split(",");
+
+              newValue = values[0].replace("/files/", "/img/")+"/"+values[1]+"/"+values[2]
+            }
+            
             this.quill.deleteText(range.index, range.length);
-            this.quill.insertEmbed(range.index, 'image', value, Quill.sources.USER);
+            this.quill.insertEmbed(range.index, 'image', newValue, Quill.sources.USER);
             break;
           }
         default:
