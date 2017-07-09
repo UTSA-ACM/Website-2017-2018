@@ -18,7 +18,16 @@
 			{{range .}}
 			
 				<li class="page-list-item">
-					<a href="/files/{{.Name}}">{{.Name}}</a>
+					<div class="title">
+						<div class="thumb-container">
+							<img src="/files/{{.Name}}" alt="Thumbnail" class="thumb-img">
+						</div>
+						<a href="/files/{{.Name}}">{{.Name}}</a>
+					</div>
+					<div class="button-group">
+						<button class="btn btn-inverse btn-borderless" onclick='clip("/files/{{.Name}}")'>Copy URL</button>
+						<button class="btn btn-danger btn-inverse btn-borderless">Delete</button>
+					</div>
 				</li>
 						
 			{{end}}
@@ -26,6 +35,19 @@
 
 		
 	</main>
-
 </body>
+
+<script>
+	function clip(text) {   
+		var copyElement = document.createElement('input');      
+		copyElement.setAttribute('type', 'text');   
+		copyElement.setAttribute('value', text);    
+		copyElement = document.body.appendChild(copyElement);   
+		copyElement.select();   
+		document.execCommand('copy');   
+		copyElement.remove();
+	}
+
+
+</script>
 </html>

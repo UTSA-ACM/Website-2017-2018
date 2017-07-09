@@ -6483,6 +6483,15 @@ var BaseTooltip = function (_Tooltip) {
             }
             break;
           }
+        case 'image':
+          {
+            if (!value) break;
+            var range = this.quill.getSelection(true);
+
+            this.quill.deleteText(range.index, range.length);
+            this.quill.insertEmbed(range.index, 'image', value, Quill.sources.USER);
+            break;
+          }
         default:
       }
       this.textbox.value = '';
