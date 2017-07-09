@@ -26,6 +26,17 @@
 	padding: .6em 1em;
 }
 
+.ql-snow .ql-tooltip[data-mode=link]::before {
+  content: "URL:";
+}
+.ql-snow .ql-tooltip[data-mode=formula]::before {
+  content: "Formula:";
+}
+
+.ql-snow .ql-tooltip[data-mode=image]::before {
+  content: "Image URL:";
+}
+
 .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
 	fill: #555;
 }
