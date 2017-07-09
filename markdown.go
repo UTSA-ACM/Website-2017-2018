@@ -122,6 +122,7 @@ func renderPage(w http.ResponseWriter, page Page) {
 func sanitizePage(md *Page) {
 	p := bluemonday.UGCPolicy()
 	p.AllowDataURIImages()
+	p.AllowImages()
 	p.AllowAttrs("class").Globally()
 
 	md.Body = p.Sanitize(md.Body)

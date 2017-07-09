@@ -39,7 +39,9 @@
 
 <script>
 	function clip(text) {   
-		var copyElement = document.createElement('input');      
+		text = text.replace(" ", "%20")
+
+		var copyElement = document.createElement('input');    
 		copyElement.setAttribute('type', 'text');   
 		copyElement.setAttribute('value', text);    
 		copyElement = document.body.appendChild(copyElement);   
