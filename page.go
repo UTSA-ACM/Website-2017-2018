@@ -15,7 +15,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-// Page is a markdown post
+// Page is a  post
 type Page struct {
 	Title    string
 	URL      string
@@ -31,6 +31,7 @@ type Page struct {
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
+// Creates a new page object, and sets the fields to defaults and generates the key and URL
 func newPage(title, author, summary, body, target, meta string) *Page {
 
 	var md Page
@@ -49,6 +50,7 @@ func newPage(title, author, summary, body, target, meta string) *Page {
 	return &md
 }
 
+// Generates the key string for editing
 func generateKey() string {
 	b := make([]byte, 7)
 	for i := range b {
@@ -57,6 +59,7 @@ func generateKey() string {
 	return string(b)
 }
 
+// Turns a title into a URL friendly string
 func titleToUrl(title string) string {
 
 	reg, err := regexp.Compile("[ ]+")
@@ -81,6 +84,7 @@ func titleToUrl(title string) string {
 
 }
 
+// Deprecated
 func templateString(tstring string, data Page) (string, error) {
 	var tbuf bytes.Buffer
 
@@ -105,6 +109,7 @@ func templateString(tstring string, data Page) (string, error) {
 
 }
 
+// Renders a post
 func renderPage(w http.ResponseWriter, page Page) {
 
 	sanitizePage(&page)
@@ -119,6 +124,7 @@ func renderPage(w http.ResponseWriter, page Page) {
 
 }
 
+// Sanitizes the page struct
 func sanitizePage(md *Page) {
 	p := bluemonday.UGCPolicy()
 	p.AllowDataURIImages()

@@ -26,6 +26,7 @@ func init() {
 	manager.m = make(map[string]session)
 }
 
+// Thread safe write to the session map
 func (sm *SessionManager) Write(token, username string) {
 	sm.lock.Lock()
 	defer sm.lock.Unlock()
@@ -33,6 +34,7 @@ func (sm *SessionManager) Write(token, username string) {
 	sm.m[token] = session{username, time.Now().Add(time.Hour * 72)}
 }
 
+// Thread safe read from session map
 func (sm *SessionManager) Read(token string) string {
 	sm.lock.RLock()
 	defer sm.lock.RUnlock()
@@ -51,6 +53,7 @@ func (sm *SessionManager) Read(token string) string {
 	return sess.username
 }
 
+// Initializes a new session
 func newSession(username string) string {
 	token := newToken()
 	manager.Write(token, username)
@@ -58,10 +61,12 @@ func newSession(username string) string {
 	return token
 }
 
+// Checks to see if the given token is valid and logged in
 func checkSession(token string) string {
 	return manager.Read(token)
 }
 
+// Creates a new token for storage in the map
 func newToken() string {
 	b := make([]byte, 40)
 	for i := range b {
