@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Renders a page to a http response
 func getPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	page := getDBPage(vars["url"])
@@ -24,6 +25,7 @@ func getPage(w http.ResponseWriter, r *http.Request) {
 	renderPage(w, page)
 }
 
+// Renders the editor
 func pageEditor(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -52,6 +54,9 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Takes a POST form that needs a title, author, summary, body, target (URL), visibility (This should just be a checkbox, only checks to see if it exists)
+// and a meta string
+// It then redirects to the created pages editor
 func updatePage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -98,6 +103,7 @@ func updatePage(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Gives a new key to the requested page
 func reKey(w http.ResponseWriter, r *http.Request) {
 	checkLogin(w, r)
 
@@ -117,7 +123,10 @@ func reKey(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin", 302)
 }
 
+// Deletes the given page
 func deletePage(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
 	vars := mux.Vars(r)
 
 	page := getDBPage(vars["url"])
@@ -137,6 +146,7 @@ func deletePage(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin", 302)
 }
 
+// Creates a page with a POST form given title
 func createPage(w http.ResponseWriter, r *http.Request) {
 
 	checkLogin(w, r)
