@@ -5,6 +5,17 @@
 	<title>Epos Dashboard</title>
     <link rel="stylesheet" type="text/css" href="/static/admin.css">
 </head>
+<style>
+	.resize-form {
+		margin-top: 20px;
+		flex-basis: 100%;
+		display: none;
+	}
+
+	.resize-form.open {
+		display: block;
+	}
+</style>
 <body>
 
 	{{template "nav" .}}
@@ -15,9 +26,9 @@
 		<h2>Files</h2>
 		
 		<ul class="page-list">
-			{{range .}}
+			{{range $index, $results := .}}  
 			
-				<li class="page-list-item">
+				<li class="page-list-item" style="flex-wrap: wrap;">
 					<div class="title">
 						<div class="thumb-container">
 							<img src="/files/{{.Name}}" alt="Thumbnail" class="thumb-img">
@@ -26,7 +37,19 @@
 					</div>
 					<div class="button-group">
 						<button class="btn btn-inverse btn-borderless" onclick='clip("/files/{{.Name}}")'>Copy URL</button>
+						{{if .Resizeable}}
+						<button class="btn btn-inverse btn-borderless" onclick="toggleResize({{ $index }})">Resize</button>
+						{{end}}
 						<button class="btn btn-danger btn-inverse btn-borderless">Delete</button>
+					</div>
+					<div class="input-container resize-form" id="resize-form-{{ $index }}">
+						<label for="title">Resize Image</label>
+						<input id="name" type="text" name="name" placeholder="Name" style="margin-bottom: 0;">
+						<input id="width" type="text" name="width" placeholder="Width" style="margin-bottom: 0;">
+						<input id="height" type="text" name="height" placeholder="Height" style="margin-bottom: 0;">
+
+						<input class="btn btn-highlight" type="submit" value="Resize" onclick="uploadFile()" style="margin-bottom: 0;">
+						<div class="error"></div>
 					</div>
 				</li>
 						
@@ -46,7 +69,6 @@
 		
 	</main>
 </body>
-
 <script>
 	function clip(text) {   
 		text = text.replace(" ", "%20")
@@ -60,8 +82,19 @@
 		copyElement.remove();
 	}
 
-	function uploadFile() {
+	function toggleResize(index) {
+		resize = document.getElementById("resize-form-" + index);
 
+		if (resize.className.includes("open")) {
+			resize.className = "input-container resize-form "
+		}
+		else {
+			resize.className = "input-container resize-form open"
+		}
+	}
+
+	function uploadFile() {
+		
 	}
 </script>
 </html>

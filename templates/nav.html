@@ -7,6 +7,7 @@
 	background: none;
 	border: none;
 	outline: none;
+	margin-top: 2px;
 }
 
 #nav-drawer {
@@ -17,6 +18,8 @@
 	height: calc(100% - 60px);
 	transition: transform 0.3s cubic-bezier(.25,.8,.25,1);
 	transform: translateX(-100%);
+
+	z-index: 1;
 }
 
 #nav-drawer.open {

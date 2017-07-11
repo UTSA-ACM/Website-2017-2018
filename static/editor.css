@@ -119,48 +119,56 @@ hr {
 
 form, .form {
   width: 100%; }
-  form label, .form label {
-    display: block;
-    margin-bottom: 4px;
-    font-size: 11pt;
-    font-weight: bold;
-    color: #444; }
-  form .input-container, .form .input-container {
-    display: inline-block;
-    margin-right: 15px; }
-  form input[type=text], form textarea, .form input[type=text], .form textarea {
-    max-width: 100%;
-    font-size: inherit;
-    border: 1px solid #ccc;
-    outline: none;
-    padding: 10px;
-    padding: .6em 1em;
-    border-radius: 4px;
-    margin: 0 0 20px 0;
-    text-overflow: ellipsis;
-    color: #333; }
-    form input[type=text].error, form textarea.error, .form input[type=text].error, .form textarea.error {
-      border: 1px solid #EB3349; }
-  form textarea, .form textarea {
-    resize: none;
-    overflow: hidden;
-    width: 100%; }
-  form input[type=checkbox], .form input[type=checkbox] {
-    display: none; }
-  form input[type=checkbox] + label span, .form input[type=checkbox] + label span {
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    margin-bottom: -1px;
-    border-radius: 2px;
-    background: #eee;
-    border: 1px solid #aaa; }
-  form input[type=checkbox]:hover + label span, .form input[type=checkbox]:hover + label span {
-    background: #ccc; }
-  form input[type=checkbox]:checked + label span, .form input[type=checkbox]:checked + label span {
-    background: #43cea2;
-    border: none; }
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11pt;
+  font-weight: bold;
+  color: #444; }
+
+.input-container {
+  display: inline-block;
+  margin-right: 15px; }
+
+input[type=text], textarea {
+  max-width: 100%;
+  font-size: inherit;
+  border: 1px solid #ccc;
+  outline: none;
+  padding: 10px;
+  padding: .6em 1em;
+  border-radius: 4px;
+  margin: 0 0 20px 0;
+  text-overflow: ellipsis;
+  color: #333; }
+  input[type=text].error, textarea.error {
+    border: 1px solid #EB3349; }
+
+textarea {
+  resize: none;
+  overflow: hidden;
+  width: 100%; }
+
+input[type=checkbox] {
+  display: none; }
+
+input[type=checkbox] + label span {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-bottom: -1px;
+  border-radius: 2px;
+  background: #eee;
+  border: 1px solid #aaa; }
+
+input[type=checkbox]:hover + label span {
+  background: #ccc; }
+
+input[type=checkbox]:checked + label span {
+  background: #43cea2;
+  border: none; }
 
 #summary {
   min-height: 7em; }
