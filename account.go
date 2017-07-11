@@ -41,7 +41,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	next := pageID + 1
 
-	if getLastID() <= next*10 {
+	if getRowCount() <= (pageID+1)*10 {
 		next = pageID
 	}
 

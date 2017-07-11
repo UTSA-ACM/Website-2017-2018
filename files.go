@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"image"
@@ -185,5 +186,80 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ajaxResponse(w, r, true, "/files/"+newName, "")
+
+}
+
+func resizeImage(name, newname string, width, height int) (string, error) {
+
+	if !(strings.HasSuffix(name, ".png") || strings.HasSuffix(name, ".jpg")) {
+		log.Print("Not a valid ending", name)
+		return "", errors.New("Resize failed: Not a PNG or JPG")
+	}
+
+	if strings.Contains(name, "..") {
+		log.Print("Tried to exit folder")
+
+		return "", errors.New("Resize failed: Relative paths not allowed")
+	}
+
+	file, err := os.Open("./files/" + name)
+
+	if err != nil {
+		log.Print(err)
+
+		return "", errors.New("Resize failed: File not found")
+	}
+
+	image, _, err := image.Decode(file)
+
+	if err != nil {
+		log.Print(err)
+		return "", errors.New("Resize failed: Could not decode file")
+	}
+
+	newImage := resize.Resize(uint(width), uint(height), image, resize.Lanczos2)
+
+	var outFile *os.File
+	var newName string
+
+	if strings.HasSuffix(name, ".png") {
+
+		newName = newname + ".png"
+
+		outFile, err = os.Create(newName)
+		defer outFile.Close()
+
+		if err != nil {
+			log.Print(err)
+
+			return "", errors.New("Resize failed: Could not create file")
+		}
+
+		err = png.Encode(outFile, newImage)
+
+	} else if strings.HasSuffix(name, ".jpg") {
+
+		newName = newname + ".jpg"
+
+		outFile, err = os.Create(newName)
+		defer outFile.Close()
+
+		if err != nil {
+			log.Print(err)
+
+			return "", errors.New("Resize failed: Could not create file")
+		}
+
+		err = png.Encode(outFile, newImage)
+
+	}
+
+	if err != nil {
+		log.Print(err)
+
+		return "", errors.New("Resize failed: Could not encode image")
+	}
+
+	return "/files/" + newName, nil
 
 }

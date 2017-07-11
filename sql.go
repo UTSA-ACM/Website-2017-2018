@@ -190,6 +190,28 @@ func getVisibleRowCount() int {
 	return count
 }
 
+func getRowCount() int {
+	rows, err := db.Query("SELECT Count(*) FROM posts")
+
+	if err != nil {
+		log.Print(err)
+		return -1
+	}
+
+	var count int
+
+	for rows.Next() {
+		err := rows.Scan(&count)
+
+		if err != nil {
+			log.Print(err)
+			count = -1
+		}
+	}
+
+	return count
+}
+
 func getPagesSortedByDate(page, count int, visibleOnly bool) ([]Page, int) {
 
 	var visibility string
