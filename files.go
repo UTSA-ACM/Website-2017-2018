@@ -13,11 +13,10 @@ import (
 
 	"strings"
 
-	"strconv"
-
 	"image/png"
 
-	"github.com/gorilla/mux"
+	"strconv"
+
 	"github.com/nfnt/resize"
 )
 
@@ -94,102 +93,24 @@ func fileManagement(w http.ResponseWriter, r *http.Request) {
 func imageResize(w http.ResponseWriter, r *http.Request) {
 	checkLogin(w, r)
 
-	vars := mux.Vars(r)
-
 	name := r.PostFormValue("filename")
 
-	if !(strings.HasSuffix(name, ".png") || strings.HasSuffix(name, ".jpg")) {
-		log.Print("Not a valid ending", name)
-		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
-		return
-	}
+	newName := r.PostFormValue("newname")
 
-	if strings.Contains(name, "..") {
-		log.Print("Tried to exit folder")
-		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
-		return
-	}
-
-	file, err := os.Open("./files/" + name)
+	ratio, err := strconv.ParseFloat(r.PostFormValue("ratio"), 64)
 
 	if err != nil {
 		log.Print(err)
-		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
-		return
+		ajaxResponse(w, r, false, nil, "Ratio not a float")
 	}
 
-	image, _, err := image.Decode(file)
+	url, err := resizeImage(name, newName, ratio)
 
-	if err != nil {
-		log.Print(err)
-		ajaxResponse(w, r, false, nil, "Resize failed: Could not decode file")
-		return
-	}
-
-	width, err := strconv.ParseInt(r.PostFormValue("width"), 10, 64)
-
-	if err != nil {
-		log.Print("Width not valid")
-		ajaxResponse(w, r, false, nil, "Resize failed: Width not a number")
-		return
-	}
-
-	height, err := strconv.ParseInt(r.PostFormValue("height"), 10, 64)
-
-	if err != nil {
-		log.Print("Height not valid")
-		ajaxResponse(w, r, false, nil, "Resize failed: Height not a number")
-		return
-	}
-
-	newImage := resize.Resize(uint(width), uint(height), image, resize.Lanczos2)
-
-	var outFile *os.File
-	var newName string
-
-	if strings.HasSuffix(name, ".png") {
-
-		newName = r.PostFormValue("newname") + ".png"
-
-		outFile, err = os.Create(newName)
-		defer outFile.Close()
-
-		if err != nil {
-			log.Print(err)
-			ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
-			return
-		}
-
-		err = png.Encode(outFile, newImage)
-
-	} else if strings.HasSuffix(name, ".jpg") {
-
-		newName = vars["newName"] + ".png"
-
-		outFile, err = os.Create(newName)
-		defer outFile.Close()
-
-		if err != nil {
-			log.Print(err)
-			ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
-			return
-		}
-
-		err = png.Encode(outFile, newImage)
-
-	}
-
-	if err != nil {
-		log.Print(err)
-		ajaxResponse(w, r, false, nil, "Resize failed: Could not encode image")
-		return
-	}
-
-	ajaxResponse(w, r, true, "/files/"+newName, "")
+	ajaxResponse(w, r, true, url, err.Error())
 
 }
 
-func resizeImage(name, newname string, width, height int) (string, error) {
+func resizeImage(name, newname string, ratio float64) (string, error) {
 
 	if !(strings.HasSuffix(name, ".png") || strings.HasSuffix(name, ".jpg")) {
 		log.Print("Not a valid ending", name)
@@ -211,6 +132,11 @@ func resizeImage(name, newname string, width, height int) (string, error) {
 	}
 
 	image, _, err := image.Decode(file)
+
+	wh := image.Bounds().Size()
+
+	width := int(float64(wh.X) * ratio)
+	height := int(float64(wh.Y) * ratio)
 
 	if err != nil {
 		log.Print(err)
