@@ -58,14 +58,14 @@
 
 		<h2>Actions</h2>
 
-		<div class="form">
+		<form method="POST" action="/admin/files/new">
 			<div class="input-container" id="create-page-form">
 				<label for="title">Upload File</label>
 				<input id="file" type="file" name="file" placeholder="File">
-				<input class="btn btn-highlight" type="submit" value="Upload" onclick="uploadFile()">
+				<input class="btn btn-highlight" type="submit" value="Upload">
 				<div class="error"></div>
 			</div>
-		</div>
+		</form>
 		
 	</main>
 </body>
@@ -93,8 +93,5 @@
 		}
 	}
 
-	function uploadFile() {
-		
-	}
 </script>
 </html>
