@@ -33,6 +33,16 @@
 			{{end}}
 		</ul>
 
+		<h2>Actions</h2>
+
+		<div class="form">
+			<div class="input-container" id="create-page-form">
+				<label for="title">Upload File</label>
+				<input id="file" type="file" name="file" placeholder="File">
+				<input class="btn btn-highlight" type="submit" value="Upload" onclick="uploadFile()">
+				<div class="error"></div>
+			</div>
+		</div>
 		
 	</main>
 </body>
@@ -50,6 +60,8 @@
 		copyElement.remove();
 	}
 
+	function uploadFile() {
 
+	}
 </script>
 </html>

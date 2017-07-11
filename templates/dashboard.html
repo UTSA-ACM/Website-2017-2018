@@ -44,16 +44,16 @@
 		
 
 		<h2>Actions</h2>
-		<p>
-			<div id="form">
-				<div class="input-container">
-					<label for="title">Create new page</label>
-					<div class="error"></div>
-					<input id="title" type="text" name="title" placeholder="Title" onkeypress="createKeyPress(event)">
-					<input class="btn btn-highlight" type="submit" value="Create" onclick="createPage()">
-				</div>
+		
+		<div class="form">
+			<div class="input-container" id="create-page-form">
+				<label for="title">Create new page</label>
+				<input id="title" type="text" name="title" placeholder="Title" onkeypress="createKeyPress(event)">
+				<input class="btn btn-highlight" type="submit" value="Create" onclick="createPage()">
+				<div class="error"></div>
 			</div>
-		</p>
+		</div>
+		
 		<p>
 			<a href="/admin/account">Manage Account</a>
 		</p>
@@ -81,7 +81,8 @@
 			"title": pageTitle
 		};
 
-	    var error = document.querySelector("#form > .input-container > .error");
+	    var error = document.querySelector("#create-page-form > .error");
+		var input = document.querySelector("#create-page-form > input[type=text]");
 
 	    makeRequest({
 			method: "POST",
@@ -91,13 +92,19 @@
 
 			    // Remove any existing error
 				error.style.display = "none";
+				error.style.color = "#EB3349";
+				error.style.fontWeight = "bold";
+				error.style.fontSize = "12pt";
+
+				input.className = "";
 
                 if (response.success) {
                     var redirectTo = response.data;
                     window.location.replace(redirectTo);
                 } else {
-                    error.style.display = "block";
+                    error.style.display = "inline";
                     error.innerHTML = response.error;
+					input.className = "error"
                     return false;
                 }
 
@@ -105,7 +112,7 @@
 			failure: function(xhr, status, responseText) {
 
                 console.error("Create failed: " + status);
-                error.style.display = "block";
+                error.style.display = "inline";
                 error.innerHTML = status + ": An unknown error occurred";
 
 			}

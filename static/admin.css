@@ -16,12 +16,14 @@ body {
 
 nav {
   width: 100%;
+  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: linear-gradient(135deg, #43cea2, #007991);
   padding: 15px 25px; }
   nav a {
+    cursor: pointer;
     text-decoration: none;
     color: #fff;
     display: flex;
@@ -115,18 +117,18 @@ hr {
     border: none;
     font-weight: bold; }
 
-form {
+form, .form {
   width: 100%; }
-  form label {
+  form label, .form label {
     display: block;
     margin-bottom: 4px;
     font-size: 11pt;
     font-weight: bold;
     color: #444; }
-  form .input-container {
+  form .input-container, .form .input-container {
     display: inline-block;
     margin-right: 15px; }
-  form input[type=text], form textarea {
+  form input[type=text], form textarea, .form input[type=text], .form textarea {
     max-width: 100%;
     font-size: inherit;
     border: 1px solid #ccc;
@@ -137,13 +139,15 @@ form {
     margin: 0 0 20px 0;
     text-overflow: ellipsis;
     color: #333; }
-  form textarea {
+    form input[type=text].error, form textarea.error, .form input[type=text].error, .form textarea.error {
+      border: 1px solid #EB3349; }
+  form textarea, .form textarea {
     resize: none;
     overflow: hidden;
     width: 100%; }
-  form input[type=checkbox] {
+  form input[type=checkbox], .form input[type=checkbox] {
     display: none; }
-  form input[type=checkbox] + label span {
+  form input[type=checkbox] + label span, .form input[type=checkbox] + label span {
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: inline-block;
     width: 14px;
@@ -152,9 +156,9 @@ form {
     border-radius: 2px;
     background: #eee;
     border: 1px solid #aaa; }
-  form input[type=checkbox]:hover + label span {
+  form input[type=checkbox]:hover + label span, .form input[type=checkbox]:hover + label span {
     background: #ccc; }
-  form input[type=checkbox]:checked + label span {
+  form input[type=checkbox]:checked + label span, .form input[type=checkbox]:checked + label span {
     background: #43cea2;
     border: none; }
 
