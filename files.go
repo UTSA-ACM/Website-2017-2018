@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
 	"image"
@@ -15,13 +14,16 @@ import (
 
 	"strconv"
 
-	"time"
-
 	"image/png"
 
 	"github.com/gorilla/mux"
 	"github.com/nfnt/resize"
 )
+
+type fileURL struct {
+	Name       string
+	Resizeable bool
+}
 
 func receiveFile(w http.ResponseWriter, r *http.Request) {
 
@@ -49,11 +51,27 @@ func receiveFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func fileManagement(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
 	files, err := ioutil.ReadDir("./files")
 
 	if err != nil {
 		log.Print(err)
 		fmt.Fprint(w, "File listing failed")
+	}
+
+	var fileURLs []fileURL
+
+	for _, name := range files {
+
+		var item fileURL
+		item.Name = name.Name()
+
+		if strings.HasSuffix(item.Name, ".png") || strings.HasSuffix(item.Name, ".jpg") {
+			item.Resizeable = true
+		}
+
+		fileURLs = append(fileURLs, item)
 	}
 
 	t, err := template.ParseFiles("templates/filemanager.html", "templates/nav.html")
@@ -63,7 +81,7 @@ func fileManagement(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "File listing failed")
 	}
 
-	err = t.Execute(w, files)
+	err = t.Execute(w, fileURLs)
 	if err != nil {
 		log.Print(err)
 		fmt.Fprint(w, "File listing failed")
@@ -74,17 +92,16 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	name := vars["name"]
-	fmt.Print(name)
 
 	if !(strings.HasSuffix(name, ".png") || strings.HasSuffix(name, ".jpg")) {
 		log.Print("Not a valid ending", name)
-		http.Redirect(w, r, "/files/"+name, 302)
+		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
 		return
 	}
 
 	if strings.Contains(name, "..") {
 		log.Print("Tried to exit folder")
-		http.Redirect(w, r, "/files/"+name, 302)
+		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
 		return
 	}
 
@@ -92,7 +109,7 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print(err)
-		http.Redirect(w, r, "/files/"+name, 302)
+		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
 		return
 	}
 
@@ -100,7 +117,7 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print(err)
-		http.Redirect(w, r, "/files/"+name, 302)
+		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
 		return
 	}
 
@@ -108,7 +125,7 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print("Width not valid")
-		http.Redirect(w, r, "/files/"+name, 302)
+		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
 		return
 	}
 
@@ -116,28 +133,51 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print("Height not valid")
-		http.Redirect(w, r, "/files/"+name, 302)
+		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
 		return
 	}
 
 	newImage := resize.Resize(uint(width), uint(height), image, resize.Lanczos2)
 
-	var buf bytes.Buffer
+	var outFile *os.File
+	var newName string
 
 	if strings.HasSuffix(name, ".png") {
-		err = png.Encode(&buf, newImage)
+
+		newName = vars["newName"] + ".png"
+
+		outFile, err = os.Create(newName)
+
+		if err != nil {
+			log.Print(err)
+			ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
+			return
+		}
+
+		err = png.Encode(outFile, newImage)
+
 	} else if strings.HasSuffix(name, ".jpg") {
-		err = png.Encode(&buf, newImage)
+
+		newName = vars["newName"] + ".png"
+
+		outFile, err = os.Create(newName)
+
+		if err != nil {
+			log.Print(err)
+			ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
+			return
+		}
+
+		err = png.Encode(outFile, newImage)
+
 	}
 
 	if err != nil {
 		log.Print(err)
-		http.Redirect(w, r, "/files/"+name, 302)
+		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
 		return
 	}
 
-	reader := bytes.NewReader(buf.Bytes())
-
-	http.ServeContent(w, r, name, time.Now(), reader)
+	ajaxResponse(w, r, true, "/files/"+newName, "")
 
 }

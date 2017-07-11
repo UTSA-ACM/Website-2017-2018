@@ -172,7 +172,7 @@ func createPage(w http.ResponseWriter, r *http.Request) {
 
 	if insertDBPage(page) == -1 {
 
-		ajaxResponse(w, r, false, "", "Page creation failed")
+		ajaxResponse(w, r, false, "", "That title/URL is already in use")
 
 		log.Print("Insert Failed")
 		return
