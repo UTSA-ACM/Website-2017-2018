@@ -19,6 +19,8 @@
 			<li class="page-list-item">
 				<a href="/pages/{{.URL}}">{{.Title}}</a>
 				<div class="button-group">
+					<input type="checkbox" id="public" name="visible" value="{{ .Visible }}" {{if .Visible}}checked{{end}}>
+					<label for="public"><span></span> Public</label>
 					<a class="btn btn-inverse btn-borderless" href="/admin/{{.URL}}/rekey">Re-Key</a>
 					<a class="btn btn-warning btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}">Edit</a>
 					<a class="btn btn-danger btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}/delete">Delete</a>

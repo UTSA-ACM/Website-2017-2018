@@ -271,6 +271,28 @@ func getDBPage(url string) Page {
 	return page
 }
 
+func setVisible(url string, visible int) {
+
+	stmt, err := db.Prepare("UPDATE posts SET visible = ? WHERE url=?")
+	defer stmt.Close()
+
+	if err != nil {
+		log.Fatal("updateDBPage:", err)
+	}
+
+	res, err := stmt.Exec(visible, url)
+
+	if err != nil {
+		log.Fatal("updateDBPage:", err)
+	}
+
+	_, err = res.LastInsertId()
+
+	if err != nil {
+		log.Fatal("updateDBPage:", err)
+	}
+}
+
 func checkUser(name, password string) bool {
 
 	rows, err := db.Query("SELECT hash FROM users WHERE name=?", name)

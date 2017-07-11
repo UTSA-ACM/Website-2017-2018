@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func dashboard(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +68,25 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	dashboardTemplate.Execute(w, data)
 
+}
+
+func changeVisibile(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
+	vars := mux.Vars(r)
+
+	url := vars["url"]
+
+	vt, err := strconv.ParseInt(vars["visible"], 10, 64)
+
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	visible := int(vt)
+
+	setVisible(url, visible)
 }
 
 func accountManagement(w http.ResponseWriter, r *http.Request) {
