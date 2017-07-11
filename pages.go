@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"text/template"
+
 	"github.com/gorilla/mux"
 )
 
@@ -44,13 +46,19 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 
 	sanitizePage(&page)
 
-	out, err := templateString("editor.html", page)
+	t, err := template.ParseFiles("editor.html", "nav.html")
 
 	if err != nil {
-		fmt.Print(err)
+		log.Print(err)
+		http.Redirect(w, r, "/admin", 302)
 	}
 
-	fmt.Fprint(w, out)
+	err = t.Execute(w, page)
+
+	if err != nil {
+		log.Print(err)
+		http.Redirect(w, r, "/admin", 302)
+	}
 
 }
 
