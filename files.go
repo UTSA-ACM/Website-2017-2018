@@ -91,7 +91,7 @@ func fileManagement(w http.ResponseWriter, r *http.Request) {
 func imageResize(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	name := vars["name"]
+	name := r.PostFormValue("filename")
 
 	if !(strings.HasSuffix(name, ".png") || strings.HasSuffix(name, ".jpg")) {
 		log.Print("Not a valid ending", name)
@@ -117,23 +117,23 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print(err)
-		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
+		ajaxResponse(w, r, false, nil, "Resize failed: Could not decode file")
 		return
 	}
 
-	width, err := strconv.ParseInt(vars["width"], 10, 64)
+	width, err := strconv.ParseInt(r.PostFormValue("width"), 10, 64)
 
 	if err != nil {
 		log.Print("Width not valid")
-		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
+		ajaxResponse(w, r, false, nil, "Resize failed: Width not a number")
 		return
 	}
 
-	height, err := strconv.ParseInt(vars["height"], 10, 64)
+	height, err := strconv.ParseInt(r.PostFormValue("height"), 10, 64)
 
 	if err != nil {
 		log.Print("Height not valid")
-		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
+		ajaxResponse(w, r, false, nil, "Resize failed: Height not a number")
 		return
 	}
 
@@ -144,7 +144,7 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 
 	if strings.HasSuffix(name, ".png") {
 
-		newName = vars["newName"] + ".png"
+		newName = r.PostFormValue("newname") + ".png"
 
 		outFile, err = os.Create(newName)
 
@@ -174,7 +174,7 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print(err)
-		ajaxResponse(w, r, false, nil, "Resize failed: Not a PNG or JPG")
+		ajaxResponse(w, r, false, nil, "Resize failed: Could not encode image")
 		return
 	}
 
