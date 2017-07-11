@@ -27,13 +27,14 @@ type fileURL struct {
 
 func receiveFile(w http.ResponseWriter, r *http.Request) {
 
+	checkLogin(w, r)
+
 	file, header, err := r.FormFile("file")
 
 	if err != nil {
 		log.Print(err)
-		ajaxResponse(w, r, false, "", "File upload failed")
+		http.Redirect(w, r, "/admin/files", 302)
 	}
-
 	defer file.Close()
 
 	disk, err := os.OpenFile("files/"+header.Filename, os.O_WRONLY|os.O_CREATE, 0666)
@@ -41,12 +42,13 @@ func receiveFile(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print(err)
-		ajaxResponse(w, r, false, "", "File upload failed")
+		http.Redirect(w, r, "/admin/files", 302)
 	}
 
 	io.Copy(disk, file)
 
-	ajaxResponse(w, r, true, "/files/"+header.Filename, "")
+	//ajaxResponse(w, r, true, "/files/"+header.Filename, "")
+	http.Redirect(w, r, "/admin/files", 302)
 
 }
 
@@ -89,6 +91,8 @@ func fileManagement(w http.ResponseWriter, r *http.Request) {
 }
 
 func imageResize(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
 	vars := mux.Vars(r)
 
 	name := r.PostFormValue("filename")
@@ -147,6 +151,7 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 		newName = r.PostFormValue("newname") + ".png"
 
 		outFile, err = os.Create(newName)
+		defer outFile.Close()
 
 		if err != nil {
 			log.Print(err)
@@ -161,6 +166,7 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 		newName = vars["newName"] + ".png"
 
 		outFile, err = os.Create(newName)
+		defer outFile.Close()
 
 		if err != nil {
 			log.Print(err)
