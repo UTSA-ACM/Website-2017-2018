@@ -46,7 +46,7 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 
 	sanitizePage(&page)
 
-	t, err := template.ParseFiles("editor.html", "nav.html")
+	t, err := template.ParseFiles("templates/editor.html", "templates/nav.html")
 
 	if err != nil {
 		log.Print(err)
