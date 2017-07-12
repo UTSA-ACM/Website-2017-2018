@@ -45,6 +45,47 @@ nav {
 	}
 }
 
+#nav-toggle {
+	cursor: pointer;
+	padding: 0;
+	background: none;
+	border: none;
+	outline: none;
+	margin-top: 2px;
+}
+
+#nav-drawer {
+	position: absolute;
+	margin: 0;
+	padding: 20px;
+	background: #333;
+	height: calc(100% - 60px);
+	transition: transform 0.3s cubic-bezier(.25,.8,.25,1);
+	transform: translateX(-100%);
+
+	z-index: 1;
+
+	&.open {
+		transform: translateX(0%);
+	}
+}
+
+.nav-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	color: #fff;
+
+	.nav-list-item {
+		margin: 0;
+
+		a {
+			text-decoration: none;
+			color: #fff;
+		}
+	}
+}
+
 main {
 	width: 90%;
 	max-width: 1200px;
@@ -209,7 +250,7 @@ label {
 // 	}
 // }
 
-input[type=text], textarea {
+input[type=text], textarea, .file-label {
 	max-width: 100%;
 	font-size: inherit;
 	border: 1px solid #ccc;

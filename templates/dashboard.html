@@ -20,7 +20,7 @@
 				<a href="/pages/{{.URL}}">{{.Title}}</a>
 				<div class="button-group">
 					<input type="checkbox" id="public-{{.URL}}" name="visible" value="{{ .Visible }}" {{if .Visible}}checked{{end}} >
-					<label for="public-{{.URL}}" onclick="setVisibility(event)"><span style="pointer-events: none;"></span> Public</label>
+					<label class="btn btn-inverse btn-borderless" style="margin-bottom: 0;" for="public-{{.URL}}" onclick="setVisibility(event)"><span style="pointer-events: none;"></span> Public</label>
 					<a class="btn btn-inverse btn-borderless" href="/admin/{{.URL}}/rekey">Re-Key</a>
 					<a class="btn btn-warning btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}">Edit</a>
 					<a class="btn btn-danger btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}/delete">Delete</a>
