@@ -20,7 +20,7 @@
 				<a href="/pages/{{.URL}}">{{.Title}}</a>
 				<div class="button-group">
 					<input type="checkbox" id="public-{{.URL}}" name="visible" value="{{ .Visible }}" {{if .Visible}}checked{{end}} >
-					<label for="public-{{.URL}}" onclick="setVisibility(event)"><span></span> Public</label>
+					<label for="public-{{.URL}}" onclick="setVisibility(event)"><span style="pointer-events: none;"></span> Public</label>
 					<a class="btn btn-inverse btn-borderless" href="/admin/{{.URL}}/rekey">Re-Key</a>
 					<a class="btn btn-warning btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}">Edit</a>
 					<a class="btn btn-danger btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}/delete">Delete</a>
@@ -123,9 +123,18 @@
 	}
 
 	function setVisibility(e) {
-		console.log(e);
+		console.log(e.target);
 
-		var labelElem = e.target;
+		var checkbox = e.target.previousElementSibling;
+  
+		var valueToSet = checkbox.checked ? 0 : 1;
+		var pageIdentifier = checkbox.id.slice(7);
+
+		makeRequest({
+			method: "GET",
+			uri: "/admin/"+pageIdentifier+"/"+valueToSet,
+		});
+
 		
 	}
 
