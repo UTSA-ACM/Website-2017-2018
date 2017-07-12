@@ -153,7 +153,12 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 
 	url, err := resizeImage(name, newName, ratio)
 
-	ajaxResponse(w, r, true, url, err.Error())
+	if err != nil {
+		log.Print(err)
+		ajaxResponse(w, r, false, "", err.Error())
+	}
+
+	ajaxResponse(w, r, true, url, "")
 
 }
 
@@ -205,7 +210,7 @@ func resizeImage(name, newname string, ratio float64) (string, error) {
 
 	if strings.HasSuffix(name, ".png") {
 
-		newName = newname + ".png"
+		newName = "./files/" + newname + ".png"
 
 		outFile, err = os.Create(newName)
 		defer outFile.Close()
@@ -220,7 +225,7 @@ func resizeImage(name, newname string, ratio float64) (string, error) {
 
 	} else if strings.HasSuffix(name, ".jpg") {
 
-		newName = newname + ".jpg"
+		newName = "./files/" + newname + ".jpg"
 
 		outFile, err = os.Create(newName)
 		defer outFile.Close()
@@ -241,6 +246,6 @@ func resizeImage(name, newname string, ratio float64) (string, error) {
 		return "", errors.New("Resize failed: Could not encode image")
 	}
 
-	return "/files/" + newName, nil
+	return newName, nil
 
 }

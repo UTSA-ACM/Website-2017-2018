@@ -114,11 +114,11 @@ func main() {
 	r.HandleFunc("/admin/files/new", receiveFile)
 	r.HandleFunc("/admin/files/list", listFiles)
 	r.HandleFunc("/admin/files/delete/{filename}", deleteFile)
+	r.HandleFunc("/admin/files/resize", imageResize)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)
-	r.HandleFunc("/admin/files/resize", imageResize)
 
 	statichandler := http.FileServer(http.Dir("./static/"))
 	fileshandler := http.FileServer(http.Dir("./files/"))
