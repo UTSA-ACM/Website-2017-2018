@@ -162,7 +162,7 @@ label {
   display: inline-block;
   margin-right: 15px; }
 
-input[type=text], textarea, .file-label {
+input[type=text], input[type=number], textarea, .file-label {
   max-width: 100%;
   font-size: inherit;
   border: 1px solid #ccc;
@@ -173,7 +173,7 @@ input[type=text], textarea, .file-label {
   margin: 0 0 20px 0;
   text-overflow: ellipsis;
   color: #333; }
-  input[type=text].error, textarea.error, .file-label.error {
+  input[type=text].error, input[type=number].error, textarea.error, .file-label.error {
     border: 1px solid #EB3349; }
 
 textarea {
