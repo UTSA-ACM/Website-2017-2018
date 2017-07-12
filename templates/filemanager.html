@@ -65,8 +65,8 @@
 					<div class="input-container resize-form" id="resize-form-{{ $index }}">
 						<label for="title">Resize Image</label>
 						<input id="name" type="text" name="name" placeholder="Name" style="margin-bottom: 0;">
-						<input id="width" type="text" name="width" placeholder="Width" style="margin-bottom: 0;">
-						<input id="height" type="text" name="height" placeholder="Height" style="margin-bottom: 0;">
+						<input id="width" type="number" name="ratio" placeholder="1.5" style="margin-bottom: 0;">
+						
 
 						<input class="btn btn-highlight" type="submit" value="Resize" onclick="uploadFile()" style="margin-bottom: 0;">
 						<div class="error"></div>
