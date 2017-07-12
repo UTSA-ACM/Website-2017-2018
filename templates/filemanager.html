@@ -60,7 +60,7 @@
 						{{if .Resizeable}}
 						<button class="btn btn-inverse btn-borderless" onclick="toggleResize({{ $index }})">Resize</button>
 						{{end}}
-						<button class="btn btn-danger btn-inverse btn-borderless">Delete</button>
+						<button class="btn btn-danger btn-inverse btn-borderless" onclick='deleteFile("{{ .Name }}")'>Delete</button>
 					</div>
 					<div class="input-container resize-form" id="resize-form-{{ $index }}">
 						<label for="title">Resize Image</label>
@@ -119,6 +119,43 @@
 		}
 	}
 
+	function deleteFile(name) {
+
+		var params = {
+			"filename": name
+		};
+
+		makeRequest({
+			method: "POST",
+			uri: "/admin/files/delete",
+			formParams: params,
+			load: function(xhr, status, response) {
+
+			    // Remove any existing error
+				error.style.display = "none";
+				error.style.color = "#EB3349";
+				error.style.fontWeight = "bold";
+				error.style.fontSize = "12pt";
+
+                if (response.success) {
+                    window.location.reload();
+                } else {
+                    error.style.display = "inline";
+                    error.innerHTML = response.error;
+                    return false;
+                }
+
+			},
+			failure: function(xhr, status, responseText) {
+
+                console.error("Create failed: " + status);
+                error.style.display = "inline";
+                error.innerHTML = status + ": An unknown error occurred";
+
+			}
+        });
+	}
+
 	function resizeImage(name, formID) {
 
 		var form = document.getElementById(formID);
@@ -145,14 +182,11 @@
 				error.style.fontWeight = "bold";
 				error.style.fontSize = "12pt";
 
-				input.className = "";
-
                 if (response.success) {
                     window.location.reload();
                 } else {
                     error.style.display = "inline";
                     error.innerHTML = response.error;
-					input.className = "error";
                     return false;
                 }
 
