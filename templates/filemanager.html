@@ -131,27 +131,16 @@
 			formParams: params,
 			load: function(xhr, status, response) {
 
-			    // Remove any existing error
-				error.style.display = "none";
-				error.style.color = "#EB3349";
-				error.style.fontWeight = "bold";
-				error.style.fontSize = "12pt";
-
                 if (response.success) {
                     window.location.reload();
                 } else {
-                    error.style.display = "inline";
-                    error.innerHTML = response.error;
+                    console.log(response.error)
                     return false;
                 }
 
 			},
 			failure: function(xhr, status, responseText) {
-
                 console.error("Create failed: " + status);
-                error.style.display = "inline";
-                error.innerHTML = status + ": An unknown error occurred";
-
 			}
         });
 	}
