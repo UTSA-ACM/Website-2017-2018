@@ -159,6 +159,10 @@ func imageResize(w http.ResponseWriter, r *http.Request) {
 
 func resizeImage(name, newname string, ratio float64) (string, error) {
 
+	if ratio <= 0 {
+		return "", errors.New("Resize failed: Ratio cannot be less than 0")
+	}
+
 	if !(strings.HasSuffix(name, ".png") || strings.HasSuffix(name, ".jpg")) {
 		log.Print("Not a valid ending", name)
 		return "", errors.New("Resize failed: Not a PNG or JPG")
@@ -184,6 +188,10 @@ func resizeImage(name, newname string, ratio float64) (string, error) {
 
 	width := int(float64(wh.X) * ratio)
 	height := int(float64(wh.Y) * ratio)
+
+	if width <= 0 || height <= 0 {
+		return "", errors.New("Resize failed: Width or Height too small")
+	}
 
 	if err != nil {
 		log.Print(err)
