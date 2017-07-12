@@ -65,10 +65,10 @@
 					<div class="input-container resize-form" id="resize-form-{{ $index }}">
 						<label for="title">Resize Image</label>
 						<input id="name" type="text" name="name" placeholder="Name" style="margin-bottom: 0;">
-						<input id="width" type="number" name="ratio" min="0.1" value="1" step="0.1" style="margin-bottom: 0; width: 5em;">
+						<input id="ratio" type="number" name="ratio" min="0.1" value="1" step="0.1" style="margin-bottom: 0; width: 5em;">
 						
 
-						<input class="btn btn-highlight" type="submit" value="Resize" onclick="uploadFile()" style="margin-bottom: 0;">
+						<input class="btn btn-highlight" type="submit" value="Resize" onclick='resizeImage({{ .Name }}, "resize-form-{{ $index }}")' style="margin-bottom: 0;">
 						<div class="error"></div>
 					</div>
 				</li>
@@ -93,6 +93,8 @@
 		
 	</main>
 </body>
+
+<script src="/static/network.js" type="text/javascript"></script>
 <script>
 	function clip(text) {   
 		text = text.replace(" ", "%20")
@@ -115,6 +117,54 @@
 		else {
 			resize.className = "input-container resize-form open"
 		}
+	}
+
+	function resizeImage(name, formID) {
+
+		var form = document.getElementById(formID);
+
+		var newName = form.querySelector("#name").value,
+			ratio = form.querySelector("#ratio").value,
+			error = form.querySelector(".error");
+		
+		var params = {
+			"filename": name,
+			"newname": newName,
+			"ratio": ratio
+		};
+
+		makeRequest({
+			method: "POST",
+			uri: "/admin/files/resize",
+			formParams: params,
+			load: function(xhr, status, response) {
+
+			    // Remove any existing error
+				error.style.display = "none";
+				error.style.color = "#EB3349";
+				error.style.fontWeight = "bold";
+				error.style.fontSize = "12pt";
+
+				input.className = "";
+
+                if (response.success) {
+                    window.location.reload();
+                } else {
+                    error.style.display = "inline";
+                    error.innerHTML = response.error;
+					input.className = "error";
+                    return false;
+                }
+
+			},
+			failure: function(xhr, status, responseText) {
+
+                console.error("Create failed: " + status);
+                error.style.display = "inline";
+                error.innerHTML = status + ": An unknown error occurred";
+
+			}
+        });
 	}
 
 	var inputs = document.querySelectorAll( '.file-input' );
