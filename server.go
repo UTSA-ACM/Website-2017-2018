@@ -112,6 +112,7 @@ func main() {
 	r.HandleFunc("/admin/password", newPassword)
 	r.HandleFunc("/admin/files", fileManagement)
 	r.HandleFunc("/admin/files/new", receiveFile)
+	r.HandleFunc("/admin/files/list", listFiles)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/verify", verify)

@@ -60,6 +60,7 @@ func fileManagement(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Print(err)
 		fmt.Fprint(w, "File listing failed")
+		return
 	}
 
 	var fileURLs []fileURL
@@ -88,6 +89,27 @@ func fileManagement(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 		fmt.Fprint(w, "File listing failed")
 	}
+}
+
+func listFiles(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
+	files, err := ioutil.ReadDir("./files")
+
+	if err != nil {
+		log.Print(err)
+		ajaxResponse(w, r, false, "", "Directory read failure")
+		return
+	}
+
+	var fileNames []string
+
+	for _, file := range files {
+		fileNames = append(fileNames, file.Name())
+	}
+
+	ajaxResponse(w, r, true, fileNames, "")
+
 }
 
 func imageResize(w http.ResponseWriter, r *http.Request) {
