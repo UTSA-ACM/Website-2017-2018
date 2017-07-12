@@ -13,6 +13,7 @@ import (
 
 	"strings"
 
+	"image/jpeg"
 	"image/png"
 
 	"strconv"
@@ -233,7 +234,7 @@ func resizeImage(name, newname string, ratio float64) (string, error) {
 			return "", errors.New("Resize failed: Could not create file")
 		}
 
-		err = png.Encode(outFile, newImage)
+		err = jpeg.Encode(outFile, newImage, nil)
 
 	}
 
