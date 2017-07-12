@@ -17,7 +17,6 @@ import (
 
 	"strconv"
 
-	"github.com/gorilla/mux"
 	"github.com/nfnt/resize"
 )
 
@@ -116,9 +115,7 @@ func listFiles(w http.ResponseWriter, r *http.Request) {
 func deleteFile(w http.ResponseWriter, r *http.Request) {
 	checkLogin(w, r)
 
-	vars := mux.Vars(r)
-
-	fileName := vars["filename"]
+	fileName := r.PostFormValue("filename")
 
 	if strings.Contains(fileName, "..") {
 		log.Print("Tried to exit folder")
