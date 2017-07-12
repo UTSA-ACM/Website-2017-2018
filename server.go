@@ -113,7 +113,7 @@ func main() {
 	r.HandleFunc("/admin/files", fileManagement)
 	r.HandleFunc("/admin/files/new", receiveFile)
 	r.HandleFunc("/admin/files/list", listFiles)
-	r.HandleFunc("/admin/files/delete/{filename}", deleteFile)
+	r.HandleFunc("/admin/files/delete", deleteFile)
 	r.HandleFunc("/admin/files/resize", imageResize)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
