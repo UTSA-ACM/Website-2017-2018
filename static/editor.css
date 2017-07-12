@@ -33,6 +33,37 @@ nav {
       font-size: 16pt;
       margin: -3px 8px 0 8px; }
 
+#nav-toggle {
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  border: none;
+  outline: none;
+  margin-top: 2px; }
+
+#nav-drawer {
+  position: absolute;
+  margin: 0;
+  padding: 20px;
+  background: #333;
+  height: calc(100% - 60px);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: translateX(-100%);
+  z-index: 1; }
+  #nav-drawer.open {
+    transform: translateX(0%); }
+
+.nav-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #fff; }
+  .nav-list .nav-list-item {
+    margin: 0; }
+    .nav-list .nav-list-item a {
+      text-decoration: none;
+      color: #fff; }
+
 main {
   width: 90%;
   max-width: 1200px;
@@ -131,7 +162,7 @@ label {
   display: inline-block;
   margin-right: 15px; }
 
-input[type=text], textarea {
+input[type=text], textarea, .file-label {
   max-width: 100%;
   font-size: inherit;
   border: 1px solid #ccc;
@@ -142,7 +173,7 @@ input[type=text], textarea {
   margin: 0 0 20px 0;
   text-overflow: ellipsis;
   color: #333; }
-  input[type=text].error, textarea.error {
+  input[type=text].error, textarea.error, .file-label.error {
     border: 1px solid #EB3349; }
 
 textarea {
