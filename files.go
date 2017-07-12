@@ -17,6 +17,7 @@ import (
 
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/nfnt/resize"
 )
 
@@ -109,6 +110,30 @@ func listFiles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ajaxResponse(w, r, true, fileNames, "")
+
+}
+
+func deleteFile(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
+	vars := mux.Vars(r)
+
+	fileName := vars["filename"]
+
+	if strings.Contains(fileName, "..") {
+		log.Print("Tried to exit folder")
+		ajaxResponse(w, r, false, "", "Relative paths not allowed")
+		return
+	}
+
+	err := os.Remove("./files/" + fileName)
+
+	if err != nil {
+		log.Print(err)
+		ajaxResponse(w, r, false, "", "Removal failed")
+	}
+
+	ajaxResponse(w, r, true, "", "")
 
 }
 
