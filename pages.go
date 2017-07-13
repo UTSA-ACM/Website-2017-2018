@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"text/template"
+
 	"github.com/gorilla/mux"
 )
 
@@ -44,13 +46,19 @@ func pageEditor(w http.ResponseWriter, r *http.Request) {
 
 	sanitizePage(&page)
 
-	out, err := templateString("editor.html", page)
+	t, err := template.ParseFiles("templates/editor.html", "templates/nav.html")
 
 	if err != nil {
-		fmt.Print(err)
+		log.Print(err)
+		http.Redirect(w, r, "/admin", 302)
 	}
 
-	fmt.Fprint(w, out)
+	err = t.Execute(w, page)
+
+	if err != nil {
+		log.Print(err)
+		http.Redirect(w, r, "/admin", 302)
+	}
 
 }
 
@@ -172,7 +180,7 @@ func createPage(w http.ResponseWriter, r *http.Request) {
 
 	if insertDBPage(page) == -1 {
 
-		ajaxResponse(w, r, false, "", "Page creation failed")
+		ajaxResponse(w, r, false, "", "That title/URL is already in use")
 
 		log.Print("Insert Failed")
 		return

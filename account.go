@@ -19,7 +19,7 @@ var (
 
 type userKeyManager struct {
 	lock   sync.RWMutex
-	keyMap map[string]userKey
+	keyMap map[string]*userKey
 }
 
 type userKey struct {
@@ -32,7 +32,7 @@ type userKey struct {
 }
 
 func init() {
-	keyManager.keyMap = make(map[string]userKey)
+	keyManager.keyMap = make(map[string]*userKey)
 }
 
 func dashboard(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +68,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	next := pageID + 1
 
-	if getLastID() <= next*10 {
+	if getRowCount() <= (pageID+1)*10 {
 		next = pageID
 	}
 
@@ -93,6 +93,25 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 	dashboardTemplate.Execute(w, data)
 
+}
+
+func changeVisible(w http.ResponseWriter, r *http.Request) {
+	checkLogin(w, r)
+
+	vars := mux.Vars(r)
+
+	url := vars["url"]
+
+	vt, err := strconv.ParseInt(vars["visible"], 10, 64)
+
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	visible := int(vt)
+
+	setVisible(url, visible)
 }
 
 func accountManagement(w http.ResponseWriter, r *http.Request) {
@@ -122,7 +141,7 @@ func generateAccountLink(w http.ResponseWriter, r *http.Request) {
 
 	keyManager.lock.Lock()
 
-	keyManager.keyMap[generatedKey] = keyEntry
+	keyManager.keyMap[generatedKey] = &keyEntry
 
 	keyManager.lock.Unlock()
 
@@ -133,10 +152,21 @@ func generateAccountLink(w http.ResponseWriter, r *http.Request) {
 
 func createAccountPage(w http.ResponseWriter, r *http.Request) {
 
+	vars := mux.Vars(r)
+
+	key := vars["key"]
+
+	keyEntry, ok := keyManager.keyMap[key]
+
+	if !ok || !keyEntry.Valid {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
 	t, err := template.ParseFiles("./templates/createaccount.html")
 
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 
 	t.Execute(w, struct{}{})
@@ -191,13 +221,11 @@ func getAccountKeys(w http.ResponseWriter, r *http.Request) {
 
 	keyManager.lock.RLock()
 
-	keys := make([]string, len(keyManager.keyMap))
+	var keys []string
 
-	i := 0
 	for k := range keyManager.keyMap {
 		if keyManager.keyMap[k].Valid {
-			keys[i] = k
-			i++
+			keys = append(keys, k)
 		}
 	}
 

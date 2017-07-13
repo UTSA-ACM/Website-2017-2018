@@ -191,6 +191,28 @@ func getVisibleRowCount() int {
 	return count
 }
 
+func getRowCount() int {
+	rows, err := db.Query("SELECT Count(*) FROM posts")
+
+	if err != nil {
+		log.Print(err)
+		return -1
+	}
+
+	var count int
+
+	for rows.Next() {
+		err := rows.Scan(&count)
+
+		if err != nil {
+			log.Print(err)
+			count = -1
+		}
+	}
+
+	return count
+}
+
 func getPagesSortedByDate(page, count int, visibleOnly bool) ([]Page, int) {
 
 	var visibility string
@@ -330,6 +352,29 @@ func getUserKeys() []string {
 	//rows, err := db.Query("SELECT key, active FROM user_keys WHERE")
 
 	return nil
+
+}
+
+func setVisible(url string, visible int) {
+
+	stmt, err := db.Prepare("UPDATE posts SET visible = ? WHERE url=?")
+	defer stmt.Close()
+
+	if err != nil {
+		log.Fatal("updateDBPage:", err)
+	}
+
+	res, err := stmt.Exec(visible, url)
+
+	if err != nil {
+		log.Fatal("updateDBPage:", err)
+	}
+
+	_, err = res.LastInsertId()
+
+	if err != nil {
+		log.Fatal("updateDBPage:", err)
+	}
 
 }
 

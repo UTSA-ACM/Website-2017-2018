@@ -16,9 +16,11 @@
 		
 		<ul class="page-list">
 			{{range .Posts}}
-			<li class="page-list-item">
+			<li class="page-list-item" id="page-{{.URL}}">
 				<a href="/pages/{{.URL}}">{{.Title}}</a>
 				<div class="button-group">
+					<input type="checkbox" id="public-{{.URL}}" name="visible" value="{{ .Visible }}" {{if .Visible}}checked{{end}} >
+					<label class="btn btn-inverse btn-borderless" style="margin-bottom: 0;" for="public-{{.URL}}" onclick="setVisibility(event)"><span style="pointer-events: none;"></span> Public</label>
 					<a class="btn btn-inverse btn-borderless" href="/admin/{{.URL}}/rekey">Re-Key</a>
 					<a class="btn btn-warning btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}">Edit</a>
 					<a class="btn btn-danger btn-inverse btn-borderless" href="/pages/{{.URL}}/{{.Key}}/delete">Delete</a>
@@ -44,16 +46,16 @@
 		
 
 		<h2>Actions</h2>
-		<p>
-			<div id="form">
-				<div class="input-container">
-					<label for="title">Create new page</label>
-					<div class="error"></div>
-					<input id="title" type="text" name="title" placeholder="Title" onkeypress="createKeyPress(event)">
-					<input class="btn btn-highlight" type="submit" value="Create" onclick="createPage()">
-				</div>
+		
+		<div class="form">
+			<div class="input-container" id="create-page-form">
+				<label for="title">Create new page</label>
+				<input id="title" type="text" name="title" placeholder="Title" onkeypress="createKeyPress(event)">
+				<input class="btn btn-highlight" type="submit" value="Create" onclick="createPage()">
+				<div class="error"></div>
 			</div>
-		</p>
+		</div>
+		
 		<p>
 			<a href="/admin/account">Manage Account</a>
 		</p>
@@ -141,8 +143,6 @@
 
 	function addKeyToList(key) {
 
-	    console.log("adding key: " + key);
-
 	    var li = document.createElement("li");
 
 	    var a = document.createElement("a");
@@ -174,7 +174,8 @@
 			"title": pageTitle
 		};
 
-	    var error = document.querySelector("#form > .input-container > .error");
+	    var error = document.querySelector("#create-page-form > .error");
+		var input = document.querySelector("#create-page-form > input[type=text]");
 
 	    makeRequest({
 			method: "POST",
@@ -184,13 +185,19 @@
 
 			    // Remove any existing error
 				error.style.display = "none";
+				error.style.color = "#EB3349";
+				error.style.fontWeight = "bold";
+				error.style.fontSize = "12pt";
+
+				input.className = "";
 
                 if (response.success) {
                     var redirectTo = response.data;
                     window.location.replace(redirectTo);
                 } else {
-                    error.style.display = "block";
+                    error.style.display = "inline";
                     error.innerHTML = response.error;
+					input.className = "error";
                     return false;
                 }
 
@@ -198,12 +205,28 @@
 			failure: function(xhr, status, response) {
 
                 console.error("Create failed: " + status);
-                error.style.display = "block";
+                error.style.display = "inline";
                 error.innerHTML = status + ": An unknown error occurred";
 
 			}
         });
 
+	}
+
+	function setVisibility(e) {
+		console.log(e.target);
+
+		var checkbox = e.target.previousElementSibling;
+  
+		var valueToSet = checkbox.checked ? 0 : 1;
+		var pageIdentifier = checkbox.id.slice(7);
+
+		makeRequest({
+			method: "GET",
+			uri: "/admin/"+pageIdentifier+"/visibility/"+valueToSet,
+		});
+
+		
 	}
 
 </script>

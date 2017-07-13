@@ -1,11 +1,39 @@
-
 {{define "nav"}}
+
 <nav>
-	<a href="/">
-		<svg class="icon" viewBox="2 2 11 16" width="10px">
-			<polyline fill="none" stroke="#fff" stroke-width="2px" points="10,4 4,10 10,16"/>
+	<button id="nav-toggle" onclick="toggleNav()">
+		<svg viewbox="0 0 100 100" width="30px">
+			<line x1="0" y1="15" x2="100" y2="15" stroke="#fff" stroke-width="15"/>
+			<line x1="0" y1="50" x2="100" y2="50" stroke="#fff" stroke-width="15"/>
+			<line x1="0" y1="85" x2="100" y2="85" stroke="#fff" stroke-width="15"/>
 		</svg>
-		<span>Home</span>
-	</a>
+	</button>
 </nav>
+
+<div id="nav-drawer">
+	<ul class="nav-list">
+		<li class="nav-list-item">
+			<a href="/">Home</a>
+		</li>
+		<li class="nav-list-item">
+			<a href="/admin">Dashboard</a>
+		</li>
+		<li class="nav-list-item">
+			<a href="/admin/files">Files</a>
+		</li>
+	</ul>
+</div>
+
+<script>
+	function toggleNav() {
+		navDrawer = document.getElementById("nav-drawer");
+
+		if (navDrawer.className.includes("open")) {
+			navDrawer.className = "";
+		}
+		else {
+			navDrawer.className = "open";
+		}
+	}
+</script>
 {{end}}
