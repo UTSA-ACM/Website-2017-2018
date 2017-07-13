@@ -18,6 +18,7 @@ import (
 
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/nfnt/resize"
 )
 
@@ -31,12 +32,12 @@ func receiveFile(w http.ResponseWriter, r *http.Request) {
 	checkLogin(w, r)
 
 	file, header, err := r.FormFile("file")
+	defer file.Close()
 
 	if err != nil {
 		log.Print(err)
 		http.Redirect(w, r, "/admin/files", 302)
 	}
-	defer file.Close()
 
 	disk, err := os.OpenFile("files/"+header.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 	defer disk.Close()
@@ -50,6 +51,46 @@ func receiveFile(w http.ResponseWriter, r *http.Request) {
 
 	//ajaxResponse(w, r, true, "/files/"+header.Filename, "")
 	http.Redirect(w, r, "/admin/files", 302)
+
+}
+
+func receiveEditorFile(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+
+	page := getDBPage(vars["url"])
+
+	if page == (Page{}) {
+		ajaxResponse(w, r, false, "", "Page does not exist")
+		return
+	}
+
+	if page.Key != vars["key"] {
+		ajaxResponse(w, r, false, "", "Cannot access that page")
+		return
+	}
+
+	file, header, err := r.FormFile("file")
+	defer file.Close()
+
+	if err != nil {
+		log.Print(err)
+		ajaxResponse(w, r, false, "", "Could not read file from request")
+		return
+	}
+
+	disk, err := os.OpenFile("files/"+header.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	defer disk.Close()
+
+	if err != nil {
+		log.Print(err)
+		ajaxResponse(w, r, false, "", "Could not create file")
+		return
+	}
+
+	io.Copy(disk, file)
+
+	ajaxResponse(w, r, true, "/files/"+header.Filename, "")
 
 }
 
@@ -124,10 +165,10 @@ func fileManagement(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Files []fileURL
-		Page  int
-		Next  int
-		Prev  int
+		Files  []fileURL
+		PageID int
+		Next   int
+		Prev   int
 	}{
 		fileURLs,
 		pageID,

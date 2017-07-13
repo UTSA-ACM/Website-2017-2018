@@ -105,6 +105,7 @@ func main() {
 	r.HandleFunc("/pages/{url}/{key}", pageEditor)
 	r.HandleFunc("/pages/{url}/{key}/update", updatePage)
 	r.HandleFunc("/pages/{url}/{key}/delete", deletePage)
+	r.HandleFunc("/page/{url}/{key}/upload", receiveEditorFile)
 	r.HandleFunc("/admin/{url}/rekey", reKey)
 	r.HandleFunc("/admin/{url}/visibility/{visible}", changeVisible)
 	r.HandleFunc("/admin/new", createPage)
