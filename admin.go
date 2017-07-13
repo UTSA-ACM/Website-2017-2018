@@ -95,24 +95,6 @@ func accountManagement(w http.ResponseWriter, r *http.Request) {
 	renderStatic(w, "account.html")
 }
 
-func newPassword(w http.ResponseWriter, r *http.Request) {
-	checkLogin(w, r)
-
-	username := getUsername(r)
-
-	old := r.PostFormValue("old")
-	new := r.PostFormValue("new")
-
-	if updatePassword(username, old, new) {
-		fmt.Fprint(w, "Password Changed")
-		return
-	}
-
-	fmt.Fprint(w, "Change Failed")
-	return
-
-}
-
 func login(w http.ResponseWriter, r *http.Request) {
 
 	if loggedIn(r) {
