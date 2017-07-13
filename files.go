@@ -56,6 +56,23 @@ func receiveFile(w http.ResponseWriter, r *http.Request) {
 func fileManagement(w http.ResponseWriter, r *http.Request) {
 	checkLogin(w, r)
 
+	filesPerPage := 6
+
+	qpage := r.URL.Query().Get("page")
+	pageID := 0
+
+	if qpage != "" {
+		var err error
+		tpage, err := strconv.ParseInt(qpage, 0, 64)
+
+		if err != nil {
+			log.Print(err)
+			http.Redirect(w, r, "/admin", 302)
+			return
+		}
+		pageID = int(tpage)
+	}
+
 	files, err := ioutil.ReadDir("./files")
 
 	if err != nil {
@@ -66,7 +83,17 @@ func fileManagement(w http.ResponseWriter, r *http.Request) {
 
 	var fileURLs []fileURL
 
-	for _, name := range files {
+	start := pageID * filesPerPage
+	end := (pageID + 1) * filesPerPage
+
+	for i, name := range files {
+
+		if i < start {
+			continue
+		}
+		if i > end {
+			break
+		}
 
 		var item fileURL
 		item.Name = name.Name()
@@ -85,7 +112,30 @@ func fileManagement(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "File listing failed")
 	}
 
-	err = t.Execute(w, fileURLs)
+	next := pageID + 1
+	prev := pageID - 1
+
+	if prev < 0 {
+		prev = 0
+	}
+
+	if len(files) <= next*filesPerPage {
+		next = pageID
+	}
+
+	data := struct {
+		Files []fileURL
+		Page  int
+		Next  int
+		Prev  int
+	}{
+		fileURLs,
+		pageID,
+		next,
+		prev,
+	}
+
+	err = t.Execute(w, data)
 	if err != nil {
 		log.Print(err)
 		fmt.Fprint(w, "File listing failed")
