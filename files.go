@@ -178,6 +178,7 @@ func resizeImage(name, newname string, ratio float64) (string, error) {
 	}
 
 	file, err := os.Open("./files/" + name)
+	defer file.Close()
 
 	if err != nil {
 		log.Print(err)

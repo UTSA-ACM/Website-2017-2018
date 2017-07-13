@@ -38,8 +38,7 @@ func start() {
 		_, err = db.Exec(
 			"CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT, created INTEGER, meta TEXT);" +
 				"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, hash TEXT);" +
-				"CREATE TABLE tags(id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT, post INT);" +
-				"CREATE TABLE user_keys (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT UNIQUE, valid BOOLEAN DEFAULT 1);")
+				"CREATE TABLE tags(id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT, post INT);")
 
 		if err != nil {
 			log.Fatal(err)
