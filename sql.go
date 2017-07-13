@@ -38,7 +38,8 @@ func start() {
 		_, err = db.Exec(
 			"CREATE TABLE posts(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, url TEXT UNIQUE, author TEXT, summary TEXT, markdown TEXT, target TEXT, key TEXT, visible INT, created INTEGER, meta TEXT);" +
 				"CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, hash TEXT);" +
-				"CREATE TABLE tags(id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT, post INT);")
+				"CREATE TABLE tags(id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT, post INT);" +
+				"CREATE TABLE user_keys (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT UNIQUE, valid BOOLEAN DEFAULT 1);")
 
 		if err != nil {
 			log.Fatal(err)
@@ -98,7 +99,7 @@ func updateDBPage(url string, page *Page) string {
 		return ""
 	}
 
-	page.URL = titleToUrl(page.Title)
+	page.URL = titleToURL(page.Title)
 
 	if page.URL == "" {
 		return ""
@@ -247,6 +248,89 @@ func getDBPage(url string) Page {
 	}
 
 	return page
+}
+
+func insertUser(username string, password string) int64 {
+
+	stmt, err := db.Prepare("INSERT INTO users(name, hash) values(?, ?)")
+	defer stmt.Close()
+
+	if err != nil {
+		log.Print(err)
+		return -1
+	}
+
+	hash := getHashString(password)
+
+	res, err := stmt.Exec(username, hash)
+
+	if err != nil {
+		log.Print(err)
+		return -1
+	}
+
+	id, err := res.LastInsertId()
+
+	if err != nil {
+		log.Print(err)
+		return -1
+	}
+
+	return id
+
+}
+
+func insertUserKey(key string) int64 {
+
+	stmt, err := db.Prepare("INSERT INTO user_keys(key) values(?)")
+	defer stmt.Close()
+	if err != nil {
+		log.Print(err)
+		return -1
+	}
+
+	res, err := stmt.Exec(key)
+
+	if err != nil {
+		log.Print(err)
+		return -1
+	}
+
+	id, err := res.LastInsertId()
+
+	if err != nil {
+		log.Print(err)
+		return -1
+	}
+
+	return id
+
+}
+
+func checkUserKey(key string) bool {
+
+	rows, err := db.Query("SELECT key FROM user_keys WHERE key=?", key)
+	defer rows.Close()
+
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+
+	for rows.Next() {
+		return true
+	}
+
+	return false
+
+}
+
+func getUserKeys() []string {
+
+	//rows, err := db.Query("SELECT key, active FROM user_keys WHERE")
+
+	return nil
+
 }
 
 func checkUser(name, password string) bool {

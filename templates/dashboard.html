@@ -5,7 +5,7 @@
 	<title>Epos Dashboard</title>
     <link rel="stylesheet" type="text/css" href="static/admin.css">
 </head>
-<body>
+<body onload="init()">
 
 	{{template "nav" .}}
 
@@ -57,12 +57,105 @@
 		<p>
 			<a href="/admin/account">Manage Account</a>
 		</p>
+		<h2>Account Creation</h2>
+		<button id="create-account" onclick="generateAccountLink()">
+			Generate Account Link
+		</button>
+		<h3>Active Account Links</h3>
+		<ul id="account-links">
+
+		</ul>
 	</main>
 
 </body>
 
-<script src="static/network.js" type="text/javascript"></script>
+<script src="/static/network.js" type="text/javascript"></script>
 <script>
+
+	function init() {
+
+	    fetchAccountLinks();
+
+	}
+
+	function fetchAccountLinks() {
+
+	    makeRequest({
+			method: "POST",
+			uri: "/admin/users/active-keys",
+			load: function(xhr, status, response) {
+
+			    /* Success:
+			    {
+			    	"success": true,
+			    	"data": ["xxxxxxxxx", "xxxxxxxxxx", "xxxxxxxxx", ...]
+			    }
+			    */
+			    if (response.success) {
+
+			        response.data.forEach(function(key) {
+			           addKeyToList(key);
+					});
+
+				} else {
+			        alert(response.error);
+				}
+
+			},
+			failure: function(xhr, status, response) {
+                alert(status + ": " + response);
+			}
+		});
+
+	}
+
+	function generateAccountLink() {
+
+	    makeRequest({
+			method: "POST",
+			uri: "/admin/users/actions/generate-account",
+			load: function(xhr, status, response) {
+
+			    /*
+			    On a successful response:
+			    {
+			    	"success": true,
+			    	"data": <new account gen key>
+				}
+			     */
+			    if (response.success) {
+
+					addKeyToList(response.data);
+
+				} else {
+			        alert(response.error);
+				}
+
+			},
+			failure: function(xhr, status, response) {
+			    alert(status + ": " + response);
+			}
+		});
+
+	}
+
+	function addKeyToList(key) {
+
+	    console.log("adding key: " + key);
+
+	    var li = document.createElement("li");
+
+	    var a = document.createElement("a");
+	    a.href = "/admin/users/actions/create-account/" + key;
+	    var text = document.createTextNode("/admin/users/actions/create-account/" + key);
+	    a.appendChild(text);
+
+	    li.appendChild(a);
+
+	    var keyList = document.getElementById("account-links");
+	    keyList.appendChild(li);
+
+	}
 
     function createKeyPress(e) {
 
@@ -102,7 +195,7 @@
                 }
 
 			},
-			failure: function(xhr, status, responseText) {
+			failure: function(xhr, status, response) {
 
                 console.error("Create failed: " + status);
                 error.style.display = "block";

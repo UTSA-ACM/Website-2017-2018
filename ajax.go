@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type Ajax struct {
+type ajax struct {
 	Success bool
 	Message string
 }

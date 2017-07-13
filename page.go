@@ -37,7 +37,7 @@ func newPage(title, author, summary, body, target, meta string) *Page {
 	var md Page
 
 	md.Title = title
-	md.URL = titleToUrl(title)
+	md.URL = titleToURL(title)
 	md.Author = author
 	md.Summary = summary
 	md.Body = body
@@ -60,7 +60,7 @@ func generateKey() string {
 }
 
 // Turns a title into a URL friendly string
-func titleToUrl(title string) string {
+func titleToURL(title string) string {
 
 	reg, err := regexp.Compile("[ ]+")
 

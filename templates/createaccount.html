@@ -1,0 +1,87 @@
+<html>
+
+	<head>
+
+		<title>Create Account</title>
+
+		<script src="/static/network.js" type="text/javascript"></script>
+
+	</head>
+
+	<body onload="init()">
+
+		<div>
+			<input id="username" type="text" name="username" placeholder="username">
+			<br>
+			<input id="password" type="password" name="password" placeholder="password">
+			<br>
+			<input id="confirm" type="password" name="confirm" placeholder="confirm password">
+			<br>
+			<input type="submit" value="Create Account" onclick="activateAccount()">
+		</div>
+
+		<script>
+
+			function init() {
+
+			    var url = window.location.href;
+			    var parsed = url.split("/");
+
+			    this.key = parsed[parsed.length - 1];
+
+			}
+
+			function activateAccount() {
+
+			    var usernameInput = document.getElementById("username");
+                var passwordInput = document.getElementById("password");
+                var confirmPassInput = document.getElementById("confirm");
+
+                var username = usernameInput.value;
+                var password = passwordInput.value;
+                var confirmPassword = confirmPassInput.value;
+
+			    // Form validation
+				if (username.length < 2) {
+				    alert("Username must be at least 2 characters long!");
+				    return;
+				}
+
+				if (password !== confirmPassword) {
+				    alert("Passwords do not match!");
+					return;
+				}
+
+			    var params = {
+					username: username,
+					password: password
+				};
+
+				makeRequest({
+					method: 'POST',
+					uri: '/admin/users/actions/activate-account/' + this.key,
+					formParams: params,
+					load: function(xhr, status, response) {
+
+					    if (response.success) {
+					        window.location.replace("/login");
+						} else {
+					        alert(response.error);
+						}
+
+					},
+					failure: function(xhr, status, response) {
+
+					    alert(status + ": error retrieving account info");
+
+					}
+				});
+
+			}
+
+		</script>
+
+	</body>
+
+
+</html>
