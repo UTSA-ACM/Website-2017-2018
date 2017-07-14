@@ -129,6 +129,29 @@ func activateAccountLink(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func deactivateAccountLink(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+
+	key := vars["key"]
+
+	keyManager.lock.Lock()
+
+	keyEntry, ok := keyManager.keyMap[key]
+
+	if !ok {
+		ajaxResponse(w, r, false, "", "That key does not exist")
+		return
+	}
+
+	keyEntry.Valid = false
+	keyEntry.Activated = false
+
+	keyManager.lock.Unlock()
+
+	ajaxResponse(w, r, true, "Key deactivated", "")
+}
+
 func getAccountKeys(w http.ResponseWriter, r *http.Request) {
 
 	checkLogin(w, r)

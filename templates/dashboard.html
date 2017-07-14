@@ -146,11 +146,22 @@
 	    var li = document.createElement("li");
 
 	    var a = document.createElement("a");
+		a.style = a.style + "\nmargin-right: 20px;"
 	    a.href = "/admin/users/actions/create-account/" + key;
 	    var text = document.createTextNode("/admin/users/actions/create-account/" + key);
 	    a.appendChild(text);
 
+		var deactivate = document.createElement("a");
+
+		deactivate.classList.add("btn", "btn-highlight")
+
+		deactivate.href = "/admin/users/actions/deactivate/" + key;
+		var deactivateText = document.createTextNode("Revoke");
+		deactivate.appendChild(deactivateText);
+
 	    li.appendChild(a);
+		li.appendChild(deactivate);
+		
 
 	    var keyList = document.getElementById("account-links");
 	    keyList.appendChild(li);

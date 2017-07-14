@@ -113,6 +113,7 @@ func main() {
 	r.HandleFunc("/admin/users/actions/generate-account", generateAccountLink)
 	r.HandleFunc("/admin/users/actions/create-account/{key}", createAccountPage)
 	r.HandleFunc("/admin/users/actions/activate-account/{key}", activateAccountLink)
+	r.HandleFunc("/admin/users/actions/deactivate/{key}", deactivateAccountLink)
 	r.HandleFunc("/admin/account", accountManagement)
 	r.HandleFunc("/admin/password", newPassword)
 	r.HandleFunc("/admin/files", fileManagement)
