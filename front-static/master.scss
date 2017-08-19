@@ -1,0 +1,105 @@
+@import "main";
+
+.page-list {
+	list-style: none;
+	margin: 0;
+	margin-bottom: 20px;
+	padding: 0;
+
+	.page-list-item {
+		display: flex;
+		
+		align-items: center;
+		flex-wrap: nowrap;
+		max-height: 20%;
+		height: 100px;
+
+		box-shadow: 2px 2px 9px 0 #999;
+
+		
+		border-top: 1px solid #ccc;
+
+		&:first-child {
+			border: none;
+		}
+
+		
+
+		a {
+			display: flex;
+			align-content: center;
+			justify-content: space-between;
+
+			text-decoration: none;
+			font-size: 1.5em;
+			width: 100%;
+			height: 100%;
+
+			padding: 15px;
+
+			img {
+				height: 100%;
+				width: auto;
+				max-width: 50%;
+				margin-right: 20px;
+			}
+
+			.post-info {
+				flex: 1;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+
+				
+
+				.author {
+					color: #777;
+					font-size: 12pt;
+					
+				}
+
+			}
+		}
+
+		.thumb-container {
+			position: relative;
+			display: inline-block;;
+			width: 40px;
+			height: 40px;
+			border-radius: 20px;
+			overflow: hidden;
+			margin-right: 20px;
+
+			.thumb-img {
+				width: 100%;
+				position: absolute;
+			}
+		}
+
+		.title {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+		}
+
+		.button-group {
+			display: inline-block;
+			flex-shrink: 0;
+			display: flex;
+			align-items: center;
+
+			.btn {
+				margin-left: 12px;
+				font-size: 10pt;
+			}
+		}
+	}
+}
+
+.page-btn {
+	margin-left: 20px;
+
+	&.hidden {
+		display: none;
+	}
+}

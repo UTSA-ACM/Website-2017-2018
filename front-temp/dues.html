@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>Pay Dues</title>
+
+		{{template "head" .}}
+		
+
+    </head>
+    <body>
+
+		{{template "nav" .}}
+
+
+        <form action="/dues/pay" method="POST" id="payment-form">
+			<script
+				src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+				data-key="{{.PublishableKey}}"
+				data-amount="1500"
+				data-name="ACM"
+				data-description="Membership Payment"
+				data-image="/front-static/logo-bordered.png"
+				data-locale="auto">
+			</script>
+        </form>
+        
+        
+        
+        
+		
+    </body>
+	
+</html>

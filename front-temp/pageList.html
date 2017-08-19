@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Epos Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="/front-static/master.css">
+</head>
+<body>
+
+	{{template "nav" .}}
+
+	<main>
+		
+	
+		<h2>Pages</h2>
+		
+		<ul class="page-list">
+			{{range .Posts}}
+			
+				<li class="page-list-item">
+					<a href="/pages/{{.URL}}">
+						<img src={{ .MetaQuery "image"}}/>
+
+						<div class="post-info">
+							<div class="title">
+								{{.Title}}
+							</div>
+							
+							<div class="author">
+								Author: {{.Author}}
+							</div>
+						</div>
+						
+					</a>
+
+				</li>
+						
+			{{end}}
+		</ul>
+
+		<div class="clear">
+			<div class="float-right">
+				<a href="/?page={{.Prev}}" class="btn page-btn {{if eq .Prev .Page}}hidden{{end}}">
+					<svg class="icon" viewBox="2 2 11 16" width="10px">
+						<polyline fill="none" stroke="#444" stroke-width="2px" points="10,4 4,10 10,16"/>
+					</svg>
+				</a>
+				<a href="/?page={{.Next}}" class="btn page-btn {{if eq .Next .Page}}hidden{{end}}">
+					<svg class="icon" viewBox="2 2 11 16" width="10px">
+						<polyline fill="none" stroke="#444" stroke-width="2px" points="4,4 10,10 4,16"/>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</main>
+
+</body>
+</html>

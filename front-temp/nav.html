@@ -1,0 +1,58 @@
+{{define "nav"}}
+
+<nav>
+	<div id="left-nav">
+		<button id="nav-toggle" onclick="toggleNav()">
+			<svg viewbox="0 0 100 100" width="30px">
+				<line x1="0" y1="15" x2="100" y2="15" stroke="#fff" stroke-width="15"/>
+				<line x1="0" y1="50" x2="100" y2="50" stroke="#fff" stroke-width="15"/>
+				<line x1="0" y1="85" x2="100" y2="85" stroke="#fff" stroke-width="15"/>
+			</svg>
+		</button>
+	</div>
+
+	<div id="logo-container">
+		<img src="/front-static/logo-bordered.png"/>
+	</div>
+</nav>
+
+<div id="nav-drawer">
+	<ul class="nav-list">
+		<li class="nav-list-item ">
+			<a href="/">Home</a>
+		</li>
+		
+		<li class="nav-list-item">
+			<a href="/pages/About">About</a>
+		</li>
+		<li class="nav-list-item ">
+			<a href="/pages/Groups">Groups</a>
+		</li>
+		<li class="nav-list-item blue">
+			<a href="/pages/Officers">Officers</a>
+		</li>
+		<li class="nav-list-item yellow">
+			<a href="/pages/Contact-Us">Contact Us</a>
+		</li>
+		<li class="nav-list-item red">
+			<a href="/pages/Join-Us">Join Us</a>
+		</li>
+		<li class="nav-list-item green">
+			<a href="/pages/Sponsors">Sponsors</a>
+		</li>
+	</ul>
+</div>
+
+<script>
+	function toggleNav() {
+		navDrawer = document.getElementById("nav-drawer");
+
+		if (navDrawer.className.includes("open")) {
+			navDrawer.className = "";
+		}
+		else {
+			navDrawer.className = "open";
+		}
+	}
+</script>
+{{end}}

@@ -2,11 +2,13 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 	"text/template"
 	"time"
 
@@ -27,6 +29,30 @@ type Page struct {
 	Visible  int
 	Datetime int
 	Meta     string
+}
+
+func (page Page) MetaQuery(keys ...string) string {
+
+	var data map[string]*json.RawMessage
+
+	temp := json.RawMessage(page.Meta)
+
+	meta := &temp
+
+	for _, query := range keys {
+
+		err := json.Unmarshal([]byte(*meta), &data)
+
+		if err != nil {
+			log.Print(err)
+			return ""
+		}
+
+		meta = data[query]
+	}
+
+	return strings.Trim(string(*meta), " ")
+
 }
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -114,7 +140,7 @@ func renderPage(w http.ResponseWriter, page Page) {
 
 	sanitizePage(&page)
 
-	t, err := template.ParseFiles("templates/markdown.html", "templates/nav.html")
+	t, err := template.ParseFiles("front-temp/markdown.html", "front-temp/nav.html", "front-temp/head.html")
 
 	err = t.Execute(w, page)
 
@@ -129,6 +155,8 @@ func sanitizePage(md *Page) {
 	p := bluemonday.UGCPolicy()
 	p.AllowDataURIImages()
 	p.AllowImages()
+	p.RequireParseableURLs(true)
+	p.AllowRelativeURLs(true)
 	p.AllowAttrs("class").Globally()
 
 	md.Body = p.Sanitize(md.Body)
@@ -137,4 +165,5 @@ func sanitizePage(md *Page) {
 	md.Title = p.Sanitize(md.Title)
 	md.Target = p.Sanitize(md.Target)
 	md.Meta = p.Sanitize(md.Meta)
+
 }

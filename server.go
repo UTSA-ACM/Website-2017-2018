@@ -2,10 +2,14 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"math/rand"
 	"net/http"
+	"text/template"
 	"time"
+
+	"github.com/stripe/stripe-go"
+	"github.com/stripe/stripe-go/charge"
+	"github.com/stripe/stripe-go/currency"
 
 	"log"
 
@@ -14,7 +18,7 @@ import (
 	mux "github.com/gorilla/mux"
 )
 
-func index(w http.ResponseWriter, r *http.Request) {
+func pageList(w http.ResponseWriter, r *http.Request) {
 	pageID := 0
 
 	qpage := r.URL.Query().Get("page")
@@ -25,13 +29,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			log.Print(err)
-			http.Redirect(w, r, "/admin", 302)
+			http.Redirect(w, r, "/", 302)
 			return
 		}
 		pageID = int(tpage)
 	}
 
-	dashboardTemplate, err := template.ParseFiles("templates/index.html", "templates/nav.html")
+	dashboardTemplate, err := template.ParseFiles("front-temp/pageList.html", "front-temp/nav.html", "front-temp/head.html")
 
 	if err != nil {
 		log.Fatal(err)
@@ -42,6 +46,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 	postCount := 10
 
 	posts, _ = getPagesSortedByDate(pageID, postCount, true)
+
+	for _, page := range posts {
+		sanitizePage(&page)
+	}
 
 	next := pageID + 1
 
@@ -91,6 +99,62 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func dues(w http.ResponseWriter, r *http.Request) {
+	duesTemplate, err := template.ParseFiles("front-temp/dues.html", "front-temp/nav.html", "front-temp/head.html")
+
+	if err != nil {
+		log.Print(err)
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
+	data := struct {
+		PublishableKey string
+	}{
+		"pk_test_SQWtlmhc3dN8tDMllgP6VAiE",
+	}
+
+	err = duesTemplate.Execute(w, data)
+
+	if err != nil {
+		log.Print(err)
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+}
+
+func chargeDebit(token string, amount uint64, description string) *stripe.Charge {
+	stripe.Key = "sk_test_7eht2ebDeXWThzZwU82rapko"
+
+	params := &stripe.ChargeParams{
+		Amount:   amount,
+		Currency: currency.USD,
+		Desc:     description,
+	}
+
+	params.SetSource(token)
+
+	ch, err := charge.New(params)
+
+	if err != nil {
+		log.Fatalf("error while trying to charge a cc", err)
+	}
+
+	log.Printf("debit created successfully %v\n", ch.ID)
+
+	return ch
+}
+
+func payDues(w http.ResponseWriter, r *http.Request) {
+	fmt.Print(r.FormValue("stripeToken"))
+	chargeDebit(r.FormValue("stripeToken"), 1500, "Testing charge")
+	fmt.Fprint(w, "success")
+}
+
+func duesPaid(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func main() {
 
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -99,7 +163,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.StrictSlash(true)
-	r.HandleFunc("/", index)
+	r.HandleFunc("/", pageList)
 	r.HandleFunc("/admin", dashboard)
 	r.HandleFunc("/pages/{url}", getPage)
 	r.HandleFunc("/pages/{url}/{key}", pageEditor)
@@ -126,9 +190,15 @@ func main() {
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/check", checkLogin)
 
+	r.HandleFunc("/dues", dues)
+	r.HandleFunc("/dues/pay", payDues)
+	r.HandleFunc("/dues/paid", duesPaid)
+
 	statichandler := http.FileServer(http.Dir("./static/"))
+	frontStatichandler := http.FileServer(http.Dir("./front-static/"))
 	fileshandler := http.FileServer(http.Dir("./files/"))
 	http.Handle("/static/", http.StripPrefix("/static", statichandler))
+	http.Handle("/front-static/", http.StripPrefix("/front-static", frontStatichandler))
 	http.Handle("/files/", http.StripPrefix("/files", fileshandler))
 
 	r.NotFoundHandler = http.HandlerFunc(notFound)
