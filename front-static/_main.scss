@@ -25,6 +25,9 @@ nav {
 	height: 60px;
 	display: flex;
 	align-items: center;
+	position: fixed;
+	top: 0;
+	z-index: 100;
 
 	
 	
@@ -71,7 +74,8 @@ nav {
 }
 
 #nav-drawer {
-	position: absolute;
+	position: fixed;
+	top: 60px;
 	margin: 0;
 	//padding-top: 20px;
 	background: #333;
@@ -128,7 +132,7 @@ nav {
 }
 
 main {
-	width: 90%;
+	width: 80%;
 	max-width: 1200px;
 	margin: 0 auto;
 	font-size: 14pt;

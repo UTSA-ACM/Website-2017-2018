@@ -6,6 +6,9 @@
 	<link rel="stylesheet" type="text/css" href="/static/dist/katex/katex.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/dist/highlight/styles/monokai.css">
 	<link rel="stylesheet" type="text/css" href="/front-static/master.css">
+
+	{{template "head" .}}
+
 </head>
 
 <body>
@@ -13,7 +16,7 @@
 
 	{{template "nav" .}}
 
-	<main>
+	<main class="content">
 	
 	{{.Body}}
 	</main>

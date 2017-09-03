@@ -137,7 +137,8 @@ func chargeDebit(token string, amount uint64, description string) *stripe.Charge
 	ch, err := charge.New(params)
 
 	if err != nil {
-		log.Fatalf("error while trying to charge a cc", err)
+		log.Print("error while trying to charge a cc", err)
+		return nil
 	}
 
 	log.Printf("debit created successfully %v\n", ch.ID)
@@ -147,12 +148,46 @@ func chargeDebit(token string, amount uint64, description string) *stripe.Charge
 
 func payDues(w http.ResponseWriter, r *http.Request) {
 	fmt.Print(r.FormValue("stripeToken"))
-	chargeDebit(r.FormValue("stripeToken"), 1500, "Testing charge")
-	fmt.Fprint(w, "success")
+	ch := chargeDebit(r.FormValue("stripeToken"), 1500, "Testing charge")
+
+	if ch == nil {
+		failedChargeTemplate, err := template.ParseFiles("front-temp/charge-failed.html", "front-temp/nav.html", "front-temp/head.html")
+
+		if err != nil {
+			log.Print(err)
+			http.Redirect(w, r, "/dues", 302)
+			return
+		}
+
+		err = failedChargeTemplate.Execute(w, nil)
+
+		if err != nil {
+			log.Print(err)
+			http.Redirect(w, r, "/dues", 302)
+			return
+		}
+	}
+
+	http.Redirect(w, r, "/dues/paid", 302)
 }
 
 func duesPaid(w http.ResponseWriter, r *http.Request) {
 
+	paidTemplate, err := template.ParseFiles("front-temp/paid.html", "front-temp/nav.html", "front-temp/head.html")
+
+	if err != nil {
+		log.Print(err)
+		http.Redirect(w, r, "/dues", 302)
+		return
+	}
+
+	err = paidTemplate.Execute(w, nil)
+
+	if err != nil {
+		log.Print(err)
+		http.Redirect(w, r, "/dues", 302)
+		return
+	}
 }
 
 func main() {
